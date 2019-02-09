@@ -103,3 +103,5 @@
 	sort_category = "Donator"
 	path = /obj/item/clothing/gloves/ring/seal/signet/fluff/vietsi
 	ckeywhitelist = list("mewchild")
+	
+Citadel-Station-13-RP/modular_citadel/code/modules/client/preference_setup/loadout_donator.dm
