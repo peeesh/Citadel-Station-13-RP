@@ -262,7 +262,7 @@
 	item_state_slots = list(slot_r_hand_str = "skrell_suit_black", slot_l_hand_str = "skrell_suit_black")
 	armor = list(melee = 40, bullet = 15, laser = 25,energy = 35, bomb = 30, bio = 100, rad = 70)
 	allowed = list(/obj/item/device/flashlight,/obj/item/weapon/tank,/obj/item/device/suit_cooling_unit,/obj/item/stack/flag,/obj/item/device/healthanalyzer,/obj/item/device/gps,/obj/item/device/radio/beacon, \
-	/obj/item/weapon/shovel,/obj/item/ammo_magazine,/obj/item/weapon/gun)
+	/obj/item/weapon/pickaxe/shovel,/obj/item/ammo_magazine,/obj/item/weapon/gun)
 
 /obj/item/clothing/head/helmet/space/void/exploration/alt
 	desc = "A radiation-resistant helmet retrofitted for exploring unknown planetary environments."
@@ -316,5 +316,20 @@
 	name = "colony director voidsuit"
 	icon_state = "capsuit_void"
 	armor = list(melee = 65, bullet = 50, laser = 50,energy = 25, bomb = 50, bio = 100, rad = 50)
+	allowed = list(/obj/item/device/flashlight,/obj/item/weapon/tank,/obj/item/device/suit_cooling_unit,/obj/item/weapon/gun)
+	slowdown = 1.5
+
+//Head of Security - update to the snowflake suit
+/obj/item/clothing/head/helmet/space/void/headofsecurity
+	desc = "A customized security voidsuit helmet. Has additional composite armor."
+	name = "head of security protosuit helmet"
+	icon_state = "hosproto"
+	armor = list(melee = 60, bullet = 35, laser = 35,energy = 15, bomb = 50, bio = 100, rad = 10)
+
+/obj/item/clothing/suit/space/void/headofsecurity
+	desc = "A customized security voidsuit. Has additional composite armor."
+	name = "head of security protosuit"
+	icon_state = "hosproto_void"
+	armor = list(melee = 60, bullet = 35, laser = 35,energy = 15, bomb = 50, bio = 100, rad = 50)
 	allowed = list(/obj/item/device/flashlight,/obj/item/weapon/tank,/obj/item/device/suit_cooling_unit,/obj/item/weapon/gun)
 	slowdown = 1.5
