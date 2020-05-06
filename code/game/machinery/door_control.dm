@@ -4,6 +4,7 @@
 	icon = 'icons/obj/stationobjs.dmi'
 	icon_state = "doorctrl0"
 	power_channel = ENVIRON
+	layer = ABOVE_WINDOW_LAYER
 	var/desiredstate = 0
 	var/exposedwires = 0
 	var/wires = 3
@@ -23,7 +24,7 @@
 	else
 		to_chat(user, "Error, no route to host.")
 
-/obj/machinery/button/remote/attackby(obj/item/weapon/W, mob/user as mob)
+/obj/machinery/button/remote/attackby(obj/item/W, mob/user as mob)
 	return attack_hand(user)
 
 /obj/machinery/button/remote/emag_act(var/remaining_charges, var/mob/user)

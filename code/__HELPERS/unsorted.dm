@@ -316,16 +316,16 @@ Turf and target are seperate in case you want to teleport some distance from a t
 		var/search_pda = 1
 
 		for(var/A in searching)
-			if( search_id && istype(A,/obj/item/weapon/card/id) )
-				var/obj/item/weapon/card/id/ID = A
+			if( search_id && istype(A,/obj/item/card/id) )
+				var/obj/item/card/id/ID = A
 				if(ID.registered_name == oldname)
 					ID.registered_name = newname
 					ID.name = "[newname]'s ID Card ([ID.assignment])"
 					if(!search_pda)	break
 					search_id = 0
 
-			else if( search_pda && istype(A,/obj/item/device/pda) )
-				var/obj/item/device/pda/PDA = A
+			else if( search_pda && istype(A,/obj/item/pda) )
+				var/obj/item/pda/PDA = A
 				if(PDA.owner == oldname)
 					PDA.owner = newname
 					PDA.name = "PDA-[newname] ([PDA.ownjob])"
@@ -358,7 +358,7 @@ Turf and target are seperate in case you want to teleport some distance from a t
 					break
 			if(newname)
 				break	//That's a suitable name!
-			src << "Sorry, that [role]-name wasn't appropriate, please try another. It's possibly too long/short, has bad characters or is already taken."
+			to_chat(src, "Sorry, that [role]-name wasn't appropriate, please try another. It's possibly too long/short, has bad characters or is already taken.")
 
 		if(!newname)	//we'll stick with the oldname then
 			return
@@ -480,7 +480,7 @@ Turf and target are seperate in case you want to teleport some distance from a t
 //Orders mobs by type then by name
 /proc/sortmobs()
 	var/list/moblist = list()
-	var/list/sortmob = sortAtom(mob_list)
+	var/list/sortmob = sortList(mob_list, cmp=/proc/cmp_name_asc)
 	for(var/mob/observer/eye/M in sortmob)
 		moblist.Add(M)
 	for(var/mob/observer/blob/M in sortmob)
@@ -501,7 +501,7 @@ Turf and target are seperate in case you want to teleport some distance from a t
 		moblist.Add(M)
 	for(var/mob/new_player/M in sortmob)
 		moblist.Add(M)
-	for(var/mob/living/simple_animal/M in sortmob)
+	for(var/mob/living/simple_mob/M in sortmob)
 		moblist.Add(M)
 //	for(var/mob/living/silicon/hivebot/M in sortmob)
 //		mob_list.Add(M)
@@ -586,10 +586,6 @@ Turf and target are seperate in case you want to teleport some distance from a t
 //Makes sure MIDDLE is between LOW and HIGH. If not, it adjusts it. Returns the adjusted value.
 /proc/between(var/low, var/middle, var/high)
 	return max(min(middle, high), low)
-
-proc/arctan(x)
-	var/y=arcsin(x/sqrt(1+x*x))
-	return y
 
 //returns random gauss number
 proc/GaussRand(var/sigma)
@@ -686,7 +682,7 @@ proc/GaussRandRound(var/sigma,var/roundto)
 
 //Returns: all the areas in the world, sorted.
 /proc/return_sorted_areas()
-	return sortAtom(return_areas())
+	return sortTim(return_areas(), /proc/cmp_area_names_asc)
 
 //Takes: Area type as text string or as typepath OR an instance of the area.
 //Returns: A list of all areas of that type in the world.
@@ -828,15 +824,25 @@ proc/GaussRandRound(var/sigma,var/roundto)
 						SX.air.copy_from(ST.zone.air)
 						ST.zone.remove(ST)
 
+					var/z_level_change = FALSE
+					if(T.z != X.z)
+						z_level_change = TRUE
+
 					//Move the objects. Not forceMove because the object isn't "moving" really, it's supposed to be on the "same" turf.
 					for(var/obj/O in T)
 						O.loc = X
 						O.update_light()
+						if(z_level_change) // The objects still need to know if their z-level changed.
+							O.onTransitZ(T.z, X.z)
 
 					//Move the mobs unless it's an AI eye or other eye type.
 					for(var/mob/M in T)
 						if(istype(M, /mob/observer/eye)) continue // If we need to check for more mobs, I'll add a variable
 						M.loc = X
+
+						if(z_level_change) // Same goes for mobs.
+							M.onTransitZ(T.z, X.z)
+
 						if(istype(M, /mob/living))
 							var/mob/living/LM = M
 							LM.check_shadow() // Need to check their Z-shadow, which is normally done in forceMove().
@@ -1063,12 +1069,12 @@ proc/get_mob_with_client_list()
 //Quick type checks for some tools
 var/global/list/common_tools = list(
 /obj/item/stack/cable_coil,
-/obj/item/weapon/tool/wrench,
-/obj/item/weapon/weldingtool,
-/obj/item/weapon/tool/screwdriver,
-/obj/item/weapon/tool/wirecutters,
-/obj/item/device/multitool,
-/obj/item/weapon/tool/crowbar)
+/obj/item/tool/wrench,
+/obj/item/weldingtool,
+/obj/item/tool/screwdriver,
+/obj/item/tool/wirecutters,
+/obj/item/multitool,
+/obj/item/tool/crowbar)
 
 /proc/istool(O)
 	if(O && is_type_in_list(O, common_tools))
@@ -1077,26 +1083,26 @@ var/global/list/common_tools = list(
 
 
 /proc/is_wire_tool(obj/item/I)
-	if(istype(I, /obj/item/device/multitool) || I.is_wirecutter())
+	if(istype(I, /obj/item/multitool) || I.is_wirecutter())
 		return TRUE
-	if(istype(I, /obj/item/device/assembly/signaler))
+	if(istype(I, /obj/item/assembly/signaler))
 		return TRUE
 	return
 
 proc/is_hot(obj/item/W as obj)
 	switch(W.type)
-		if(/obj/item/weapon/weldingtool)
-			var/obj/item/weapon/weldingtool/WT = W
+		if(/obj/item/weldingtool)
+			var/obj/item/weldingtool/WT = W
 			if(WT.isOn())
 				return 3800
 			else
 				return 0
-		if(/obj/item/weapon/flame/lighter)
+		if(/obj/item/flame/lighter)
 			if(W:lit)
 				return 1500
 			else
 				return 0
-		if(/obj/item/weapon/flame/match)
+		if(/obj/item/flame/match)
 			if(W:lit)
 				return 1000
 			else
@@ -1106,9 +1112,9 @@ proc/is_hot(obj/item/W as obj)
 				return 1000
 			else
 				return 0
-		if(/obj/item/weapon/pickaxe/plasmacutter)
+		if(/obj/item/pickaxe/plasmacutter)
 			return 3800
-		if(/obj/item/weapon/melee/energy)
+		if(/obj/item/melee/energy)
 			return 3500
 		else
 			return 0
@@ -1141,22 +1147,22 @@ proc/is_hot(obj/item/W as obj)
 		return TRUE
 	return ( \
 		W.is_screwdriver()		     				              || \
-		istype(W, /obj/item/weapon/pen)                           || \
-		istype(W, /obj/item/weapon/weldingtool)					  || \
-		istype(W, /obj/item/weapon/flame/lighter/zippo)			  || \
-		istype(W, /obj/item/weapon/flame/match)            		  || \
+		istype(W, /obj/item/pen)                           || \
+		istype(W, /obj/item/weldingtool)					  || \
+		istype(W, /obj/item/flame/lighter/zippo)			  || \
+		istype(W, /obj/item/flame/match)            		  || \
 		istype(W, /obj/item/clothing/mask/smokable/cigarette) 		      || \
-		istype(W, /obj/item/weapon/pickaxe/shovel) \
+		istype(W, /obj/item/shovel) \
 	)
 
 /proc/is_surgery_tool(obj/item/W as obj)
 	return (	\
-	istype(W, /obj/item/weapon/surgical/scalpel)			||	\
-	istype(W, /obj/item/weapon/surgical/hemostat)		||	\
-	istype(W, /obj/item/weapon/surgical/retractor)		||	\
-	istype(W, /obj/item/weapon/surgical/cautery)			||	\
-	istype(W, /obj/item/weapon/surgical/bonegel)			||	\
-	istype(W, /obj/item/weapon/surgical/bonesetter)
+	istype(W, /obj/item/surgical/scalpel)			||	\
+	istype(W, /obj/item/surgical/hemostat)		||	\
+	istype(W, /obj/item/surgical/retractor)		||	\
+	istype(W, /obj/item/surgical/cautery)			||	\
+	istype(W, /obj/item/surgical/bonegel)			||	\
+	istype(W, /obj/item/surgical/bonesetter)
 	)
 
 // check if mob is lying down on something we can operate him on.
@@ -1200,13 +1206,13 @@ Checks if that loc and dir has a item on the wall
 TODO - Fix this ancient list of wall items. Preferably make it dynamically populated. ~Leshana
 */
 var/list/WALLITEMS = list(
-	/obj/machinery/power/apc, /obj/machinery/alarm, /obj/item/device/radio/intercom, /obj/structure/frame,
+	/obj/machinery/power/apc, /obj/machinery/alarm, /obj/item/radio/intercom, /obj/structure/frame,
 	/obj/structure/extinguisher_cabinet, /obj/structure/reagent_dispensers/peppertank,
 	/obj/machinery/status_display, /obj/machinery/requests_console, /obj/machinery/light_switch, /obj/structure/sign,
 	/obj/machinery/newscaster, /obj/machinery/firealarm, /obj/structure/noticeboard, /obj/machinery/button/remote,
 	/obj/machinery/computer/security/telescreen, /obj/machinery/embedded_controller/radio,
-	/obj/item/weapon/storage/secure/safe, /obj/machinery/door_timer, /obj/machinery/flasher, /obj/machinery/keycard_auth,
-	/obj/structure/mirror, /obj/structure/closet/fireaxecabinet, /obj/machinery/computer/security/telescreen/entertainment
+	/obj/item/storage/secure/safe, /obj/machinery/door_timer, /obj/machinery/flasher, /obj/machinery/keycard_auth,
+	/obj/structure/mirror, /obj/structure/fireaxecabinet, /obj/machinery/computer/security/telescreen/entertainment
 	)
 /proc/gotwallitem(loc, dir)
 	for(var/obj/O in loc)

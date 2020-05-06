@@ -3,7 +3,7 @@
 	oxygen = MOLES_O2STANDARD
 	nitrogen = MOLES_N2STANDARD
 
-/turf/unsimulated/Initialize()
+/turf/unsimulated/Initialize(mapload)
 	flags |= INITIALIZED
 	return INITIALIZE_HINT_NORMAL
 
@@ -20,8 +20,8 @@
 //VOREStation Add End
 
 // Better nip this just in case.
-/turf/unsimulated/rcd_values(mob/living/user, obj/item/weapon/rcd/the_rcd, passed_mode)
+/turf/unsimulated/rcd_values(mob/living/user, obj/item/rcd/the_rcd, passed_mode)
 	return FALSE
 
-/turf/unsimulated/rcd_act(mob/living/user, obj/item/weapon/rcd/the_rcd, passed_mode)
+/turf/unsimulated/rcd_act(mob/living/user, obj/item/rcd/the_rcd, passed_mode)
 	return FALSE

@@ -30,15 +30,15 @@
 	var/mass = 200			// kg
 	var/max_temp = 3058
 	var/temperature = T20C
-	var/list/obj/item/weapon/fuelrod/rods
+	var/list/obj/item/fuelrod/rods
 	var/list/obj/machinery/atmospherics/pipe/pipes
-	var/obj/item/device/radio/radio
+	var/obj/item/radio/radio
 
 /obj/machinery/power/fission/New()
 	. = ..()
 	rods = new()
 	pipes = new()
-	radio = new /obj/item/device/radio{channels=list("Engineering")
+	radio = new /obj/item/radio{channels=list("Engineering")
 		icon = 'icons/obj/robot_component.dmi'
 		icon_state = "radio"}(src)
 	if(mapped_in)
@@ -68,7 +68,7 @@
 	var/meltingrods = 0
 	if(rods.len > 0)
 		for(var/i=1,i<=rods.len,i++)
-			var/obj/item/weapon/fuelrod/rod = rods[i]
+			var/obj/item/fuelrod/rod = rods[i]
 			if(rod.is_melted())
 				meltedrods++
 			else if(rod.temperature >= rod.melting_point)
@@ -93,7 +93,7 @@
 
 	if(rods.len > 0)
 		for(var/i=1,i<=rods.len,i++)
-			var/obj/item/weapon/fuelrod/rod = rods[i]
+			var/obj/item/fuelrod/rod = rods[i]
 			rod.equalize(src, gasefficiency)
 
 	if(temperature > max_temp && health > 0 && max_temp > 0) // Overheating, reduce structural integrity, emit more rads.
@@ -104,7 +104,7 @@
 
 	var/healthmul = (((health / max_health) - 1) / -1)
 	var/power = (decay_heat / REACTOR_RADS_TO_MJ) * max(healthmul, 0.1)
-	radiation_repository.radiate(src, max(power * REACTOR_RADIATION_MULTIPLIER, 0))
+	SSradiation.radiate(src, max(power * REACTOR_RADIATION_MULTIPLIER, 0))
 
 /obj/machinery/power/fission/attack_hand(mob/user as mob)
 	ui_interact(user)
@@ -139,7 +139,7 @@
 
 	data["rods"] = new /list(rods.len)
 	for(var/i=1,i<=rods.len,i++)
-		var/obj/item/weapon/fuelrod/rod = rods[i]
+		var/obj/item/fuelrod/rod = rods[i]
 		var/roddata[0]
 		roddata["rod"] = "\ref[rod]"
 		roddata["name"] = rod.name
@@ -150,7 +150,7 @@
 		roddata["insertion"] = round(rod.insertion * 100)
 		data["rods"][i] = roddata
 
-	ui = GLOB.nanomanager.try_update_ui(user, src, ui_key, ui, data, force_open)
+	ui = SSnanoui.try_update_ui(user, src, ui_key, ui, data, force_open)
 	if(!ui)
 		ui = new(user, src, ui_key, "fission_engine.tmpl", "Nuclear Fission Core", 500, 600)
 		ui.set_initial_data(data)
@@ -164,12 +164,12 @@
 		return 1
 
 	if(href_list["rod_eject"])
-		var/obj/item/weapon/fuelrod/rod = locate(href_list["rod_eject"])
+		var/obj/item/fuelrod/rod = locate(href_list["rod_eject"])
 		if(istype(rod))
 			eject_rod(rod)
 
 	if(href_list["rod_insertion"])
-		var/obj/item/weapon/fuelrod/rod = locate(href_list["rod_insertion"])
+		var/obj/item/fuelrod/rod = locate(href_list["rod_insertion"])
 		if(istype(rod) && rod.loc == src)
 			var/new_insersion = input(usr,"Enter new insertion (0-100)%","Insertion control",rod.insertion * 100) as num
 			rod.insertion = between(0, new_insersion / 100, 1)
@@ -184,7 +184,7 @@
 	usr.set_machine(src)
 	src.add_fingerprint(usr)
 
-/obj/machinery/power/fission/attackby(var/obj/item/weapon/W as obj, var/mob/user as mob)
+/obj/machinery/power/fission/attackby(var/obj/item/W as obj, var/mob/user as mob)
 	add_fingerprint(user)
 	if(exploded)
 		return ..()
@@ -196,17 +196,17 @@
 		to_chat(user, "<span class='warning'>\The [src] is being repaired!</span>")
 		return
 
-	if(istype(W, /obj/item/device/multitool))
+	if(istype(W, /obj/item/multitool))
 		to_chat(user, "<span class='notice'>You connect \the [src] to \the [W].</span>")
-		var/obj/item/device/multitool/M = W
+		var/obj/item/multitool/M = W
 		M.connectable = src
 		return
 
-	if(istype(W, /obj/item/weapon/fuelrod))
+	if(istype(W, /obj/item/fuelrod))
 		if(rods.len >= rod_capacity)
 			to_chat(user, "<span class='notice'>Looks like \the [src] is full.</span>")
 		else
-			var/obj/item/weapon/fuelrod/rod = W
+			var/obj/item/fuelrod/rod = W
 			if(rod.is_melted())
 				to_chat(user, "<span class='notice'>That's probably a bad idea.</span>")
 				return
@@ -226,20 +226,20 @@
 			to_chat(user, "<span class='notice'>There's nothing left to remove.</span>")
 			return
 		for(var/i=1,i<=rods.len,i++)
-			var/obj/item/weapon/fuelrod/rod = rods[i]
+			var/obj/item/fuelrod/rod = rods[i]
 			if(rod.health == 0 || rod.life == 0)
 				to_chat(user, "<span class='notice'>You carefully start removing \the [rod] from \the [src].</span>")
 				if(do_after(user, 40))
 					eject_rod(rod)
 				return
-		var/obj/item/weapon/fuelrod/rod = rods[rods.len]
+		var/obj/item/fuelrod/rod = rods[rods.len]
 		to_chat(user, "<span class='notice'>You carefully start removing \the [rod] from \the [src].</span>")
 		if(do_after(user, 40))
 			eject_rod(rod)
 		return
 
-	if(istype(W, /obj/item/weapon/weldingtool) && health < max_health)
-		var/obj/item/weapon/weldingtool/WT = W
+	if(istype(W, /obj/item/weldingtool) && health < max_health)
+		var/obj/item/weldingtool/WT = W
 		if(!WT.remove_fuel(0, user))
 			to_chat(user, "<span class='warning'>\The [WT] must be on to complete this task.</span>")
 			return
@@ -333,7 +333,7 @@
 	integrity = integrity < 0 ? 0 : integrity
 	return integrity
 
-/obj/machinery/power/fission/proc/eject_rod(var/obj/item/weapon/fuelrod/rod)
+/obj/machinery/power/fission/proc/eject_rod(var/obj/item/fuelrod/rod)
 	if(!istype(rod) || rod.loc != src)
 		return
 	rods -= rod
@@ -403,7 +403,7 @@
 		var/decaying_rods = 0
 		var/decay_heat = 0
 		for(var/i=1,i<=rods.len,i++)
-			var/obj/item/weapon/fuelrod/rod = rods[i]
+			var/obj/item/fuelrod/rod = rods[i]
 			if(rod.life > 0 && rod.decay_heat > 0)
 				decay_heat += rod.tick_life()
 				decaying_rods++
@@ -426,7 +426,7 @@
 
 		// Give the alarm time to play. Then... FLASH! AH-AH!
 		spawn(15 SECONDS)
-			radiation_repository.z_radiate(locate(1, 1, L.z), rad_power * BREACH_RADIATION_MULTIPLIER, 1)
+			SSradiation.z_radiate(locate(1, 1, L.z), rad_power * BREACH_RADIATION_MULTIPLIER, 1)
 			for(var/mob/living/mob in living_mob_list)
 				var/turf/T = get_turf(mob)
 				if(T && (L.z == T.z))
@@ -464,7 +464,7 @@
 		// Some engines just want to see the world burn.
 		spawn(17 SECONDS)
 			for(var/i=1,i<=rods.len,i++)
-				var/obj/item/weapon/fuelrod/rod = rods[i]
+				var/obj/item/fuelrod/rod = rods[i]
 				rod.loc = L
 				rods = new()
 				pipes = new()

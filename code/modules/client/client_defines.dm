@@ -18,7 +18,6 @@
 		//OTHER//
 		/////////
 	var/datum/preferences/prefs = null
-	var/move_delay		= 1
 	var/moving			= null
 	var/adminobs		= null
 	var/area			= null
@@ -36,7 +35,7 @@
 		//SECURITY//
 		////////////
 	// comment out the line below when debugging locally to enable the options & messages menu
-	//control_freak = 1
+	// control_freak = CONTROL_FREAK_MACROS
 
 	var/received_irc_pm = -99999
 	var/irc_admin			//IRC admin that spoke with them last.
@@ -56,5 +55,14 @@
 	preload_rsc = PRELOAD_RSC
 
 	var/global/obj/screen/click_catcher/void
+
+	var/lastping = 0
+	var/avgping = 0
+	var/connection_time //world.time they connected
+	var/connection_realtime //world.realtime they connected
+	var/connection_timeofday //world.timeofday they connected
+
+	var/list/topiclimiter
+	var/list/clicklimiter
 
 	var/datum/chatOutput/chatOutput
