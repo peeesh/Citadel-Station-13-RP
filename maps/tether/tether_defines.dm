@@ -1,25 +1,7 @@
-//Atmosphere properties
-#define VIRGO3B_ONE_ATMOSPHERE	82.4 //kPa
-#define VIRGO3B_AVG_TEMP	234 //kelvin
-
-#define VIRGO3B_PER_N2		0.16 //percent
-#define VIRGO3B_PER_O2		0.00
-#define VIRGO3B_PER_N2O		0.00 //Currently no capacity to 'start' a turf with this. See turf.dm
-#define VIRGO3B_PER_CO2		0.12
-#define VIRGO3B_PER_PHORON	0.72
-
-//Math only beyond this point
-#define VIRGO3B_MOL_PER_TURF	(VIRGO3B_ONE_ATMOSPHERE*CELL_VOLUME/(VIRGO3B_AVG_TEMP*R_IDEAL_GAS_EQUATION))
-#define VIRGO3B_MOL_N2			(VIRGO3B_MOL_PER_TURF * VIRGO3B_PER_N2)
-#define VIRGO3B_MOL_O2			(VIRGO3B_MOL_PER_TURF * VIRGO3B_PER_O2)
-#define VIRGO3B_MOL_N2O			(VIRGO3B_MOL_PER_TURF * VIRGO3B_PER_N2O)
-#define VIRGO3B_MOL_CO2			(VIRGO3B_MOL_PER_TURF * VIRGO3B_PER_CO2)
-#define VIRGO3B_MOL_PHORON		(VIRGO3B_MOL_PER_TURF * VIRGO3B_PER_PHORON)
-
 //Turfmakers
-#define VIRGO3B_SET_ATMOS	nitrogen=VIRGO3B_MOL_N2;oxygen=VIRGO3B_MOL_O2;carbon_dioxide=VIRGO3B_MOL_CO2;phoron=VIRGO3B_MOL_PHORON;temperature=VIRGO3B_AVG_TEMP
-#define VIRGO3B_TURF_CREATE(x)	x/virgo3b/nitrogen=VIRGO3B_MOL_N2;x/virgo3b/oxygen=VIRGO3B_MOL_O2;x/virgo3b/carbon_dioxide=VIRGO3B_MOL_CO2;x/virgo3b/phoron=VIRGO3B_MOL_PHORON;x/virgo3b/temperature=VIRGO3B_AVG_TEMP;x/virgo3b/outdoors=TRUE;x/virgo3b/update_graphic(list/graphic_add = null, list/graphic_remove = null) return 0
-#define VIRGO3B_TURF_CREATE_UN(x)	x/virgo3b/nitrogen=VIRGO3B_MOL_N2;x/virgo3b/oxygen=VIRGO3B_MOL_O2;x/virgo3b/carbon_dioxide=VIRGO3B_MOL_CO2;x/virgo3b/phoron=VIRGO3B_MOL_PHORON;x/virgo3b/temperature=VIRGO3B_AVG_TEMP
+#define VIRGO3B_SET_ATMOS	initial_gas_mix = ATMOSPHERE_ID_VIRGO3B
+#define VIRGO3B_TURF_CREATE(x)	x/virgo3b/initial_gas_mix = ATMOSPHERE_ID_VIRGO3B;x/virgo3b/outdoors=TRUE;x/virgo3b/allow_gas_overlays = FALSE
+#define VIRGO3B_TURF_CREATE_UN(x)	x/virgo3b/initial_gas_mix=ATMOSPHERE_ID_VIRGO3B
 
 //Normal map defs
 #define Z_LEVEL_SURFACE_LOW					1
@@ -40,7 +22,10 @@
 #define Z_LEVEL_BEACH_CAVE					16
 #define Z_LEVEL_AEROSTAT					17
 #define Z_LEVEL_AEROSTAT_SURFACE			18
-
+#define Z_LEVEL_ROGUEMINE_1					19
+#define Z_LEVEL_ROGUEMINE_2					20
+#define Z_LEVEL_ROGUEMINE_3					21
+#define Z_LEVEL_ROGUEMINE_4					22
 //Camera networks
 #define NETWORK_TETHER "Tether"
 #define NETWORK_TCOMMS "Telecommunications" //Using different from Polaris one for better name
@@ -139,11 +124,19 @@
 		/area/tether/surfacebase/emergency_storage/rnd,
 		/area/tether/surfacebase/emergency_storage/atrium)
 
+
+	belter_docked_z = 		list(Z_LEVEL_SPACE_HIGH)
+	belter_transit_z =	 	list(Z_LEVEL_SHIPS)
+	belter_belt_z = 		list(Z_LEVEL_ROGUEMINE_1,
+						 		 Z_LEVEL_ROGUEMINE_2,
+						 	 	 Z_LEVEL_ROGUEMINE_3,
+								 Z_LEVEL_ROGUEMINE_4)
 	lateload_z_levels = list(
 		list("Tether - Misc","Tether - Ships","Tether - Underdark"), //Stock Tether lateload maps
 		list("Alien Ship - Z1 Ship"),
 		list("Desert Planet - Z1 Beach","Desert Planet - Z2 Cave"),
-		list("Remmi Aerostat - Z1 Aerostat","Remmi Aerostat - Z2 Surface")
+		list("Remmi Aerostat - Z1 Aerostat","Remmi Aerostat - Z2 Surface"),
+		list("Asteroid Belt 1","Asteroid Belt 2","Asteroid Belt 3","Asteroid Belt 4")
 	)
 
 	ai_shell_restricted = TRUE
@@ -271,13 +264,13 @@
 /datum/map_z_level/tether/mine
 	z = Z_LEVEL_SURFACE_MINE
 	name = "Mining Outpost"
-	flags = MAP_LEVEL_STATION|MAP_LEVEL_CONTACT|MAP_LEVEL_PLAYER
+	flags = MAP_LEVEL_CONTACT|MAP_LEVEL_PLAYER
 	base_turf = /turf/simulated/floor/outdoors/rocks/virgo3b
 
 /datum/map_z_level/tether/solars
 	z = Z_LEVEL_SOLARS
 	name = "Solar Field"
-	flags = MAP_LEVEL_STATION|MAP_LEVEL_CONTACT|MAP_LEVEL_PLAYER
+	flags = MAP_LEVEL_CONTACT|MAP_LEVEL_PLAYER
 	base_turf = /turf/simulated/floor/outdoors/rocks/virgo3b
 
 /datum/map_z_level/tether/colony

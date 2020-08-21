@@ -8,6 +8,7 @@
 	var/max_field_radius = 150
 	var/list/field = list()
 	density = 1
+	req_one_access = list(access_engine,access_captain,access_security)
 	var/locked = 0
 	var/average_field_strength = 0
 	var/strengthen_rate = 0.2
@@ -22,7 +23,7 @@
 	var/time_since_fail = 100
 	var/energy_conversion_rate = 0.0006	//how many renwicks per watt?  Higher numbers equals more effiency.
 	var/z_range = 0 // How far 'up and or down' to extend the shield to, in z-levels.  Only works on MultiZ supported z-levels.
-	use_power = 0	//doesn't use APC power
+	use_power = USE_POWER_OFF	//doesn't use APC power
 
 /obj/machinery/shield_gen/advanced
 	name = "advanced bubble shield generator"
@@ -56,14 +57,16 @@
 	s.start()
 
 /obj/machinery/shield_gen/attackby(obj/item/W, mob/user)
-	if(istype(W, /obj/item/card/id))
-		var/obj/item/card/id/C = W
-		if(access_captain in C.access || access_security in C.access || access_engine in C.access)
+	if(istype(W, /obj/item/card/id) || istype(W, /obj/item/pda))
+		if(emagged)
+			to_chat(user, "<span class='warning'>The lock seems to be broken.</span>")
+			return
+		if(src.allowed(user))
 			src.locked = !src.locked
 			to_chat(user, "Controls are now [src.locked ? "locked." : "unlocked."]")
 			updateDialog()
 		else
-			to_chat(user, "<font color='red'>Access denied.</font>")
+			to_chat(user, "<span class='warning'>Access denied.</span>")
 	else if(W.is_wrench())
 		src.anchored = !src.anchored
 		playsound(src, W.usesound, 75, 1)

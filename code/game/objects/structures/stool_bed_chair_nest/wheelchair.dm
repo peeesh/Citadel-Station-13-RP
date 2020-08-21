@@ -103,6 +103,8 @@
 
 /obj/structure/bed/chair/wheelchair/Move()
 	..()
+	if(world.time < last_active_move + move_delay)
+		return
 	if(has_buckled_mobs())
 		for(var/A in buckled_mobs)
 			var/mob/living/occupant = A
@@ -124,6 +126,7 @@
 			else
 				if (occupant && (src.loc != occupant.loc))
 					src.forceMove(occupant.loc) // Failsafe to make sure the wheelchair stays beneath the occupant after driving
+		last_active_move = world.time
 
 /obj/structure/bed/chair/wheelchair/attack_hand(mob/living/user as mob)
 	if (pulling_along)
@@ -237,3 +240,20 @@
 		spawn(0)
 			qdel(src)
 		return
+
+//Dolly Below
+
+/obj/structure/bed/chair/wheelchair/dolly
+	name = "transport dolly"
+	desc = "The safest way to transport high-risk patients."
+	icon_state = "wheelchair_dolly"
+
+/obj/structure/bed/chair/wheelchair/dolly/setDir()
+	..()
+	overlays = null
+	var/image/O = image(icon = 'icons/obj/furniture.dmi', icon_state = "d_overlay", layer = FLY_LAYER, dir = src.dir)
+	overlays += O
+	if(has_buckled_mobs())
+		for(var/A in buckled_mobs)
+			var/mob/living/L = A
+			L.setDir(dir)

@@ -6,7 +6,7 @@
 	icon_state = "portgen0"
 	density = 1
 	anchored = 0
-	use_power = 0
+	use_power = USE_POWER_OFF
 
 	var/active = 0
 	var/power_gen = 5000
@@ -246,7 +246,7 @@
 	var/phoron = (sheets+sheet_left)*20
 	var/datum/gas_mixture/environment = loc.return_air()
 	if (environment)
-		environment.adjust_gas_temp("phoron", phoron/10, temperature + T0C)
+		environment.adjust_gas_temp(/datum/gas/phoron, phoron/10, temperature + T0C)
 
 	sheets = 0
 	sheet_left = 0

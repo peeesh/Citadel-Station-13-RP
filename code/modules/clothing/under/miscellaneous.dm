@@ -169,13 +169,13 @@
 	icon_state = "gentlesuit_skirt"
 
 /obj/item/clothing/under/gimmick/rank/captain/suit
-	name = "colony director's suit"
+	name = "Facility Director's suit"
 	desc = "A green suit and yellow necktie. Exemplifies authority."
 	icon_state = "green_suit"
 	item_state_slots = list(slot_r_hand_str = "centcom", slot_l_hand_str = "centcom")
 
 /obj/item/clothing/under/gimmick/rank/captain/suit/skirt
-	name = "colony director's skirt suit"
+	name = "Facility Director's skirt suit"
 	icon_state = "green_suit_skirt"
 
 /obj/item/clothing/under/gimmick/rank/head_of_personnel/suit
@@ -400,8 +400,8 @@
 	item_state_slots = list(slot_r_hand_str = "dress_white", slot_l_hand_str = "dress_white")
 
 /obj/item/clothing/under/dress/dress_cap
-	name = "colony director's dress uniform"
-	desc = "Feminine fashion for the style conscious Colony Director."
+	name = "Facility Director's dress uniform"
+	desc = "Feminine fashion for the style conscious Facility Director."
 	icon_state = "dress_cap"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|ARMS
 
@@ -508,8 +508,8 @@
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO
 
 /obj/item/clothing/under/captainformal
-	name = "colony director's formal uniform"
-	desc = "A Colony Director's formal-wear, for special occasions."
+	name = "Facility Director's formal uniform"
+	desc = "A Facility Director's formal-wear, for special occasions."
 	icon_state = "captain_formal"
 	item_state_slots = list(slot_r_hand_str = "lawyer_blue", slot_l_hand_str = "lawyer_blue")
 
@@ -774,6 +774,11 @@
 	desc = "No honest man would wear this abomination."
 	icon_state = "mankini"
 
+/obj/item/clothing/under/swimsuit/stripper/cowbikini
+	name = "cow print bikini"
+	desc = "A rather skimpy cow patterned swimsuit."
+	icon_state = "swim_cow"
+
 /*
  * pyjamas
  */
@@ -986,19 +991,19 @@
 	icon_state = "btc_bartender_s"
 
 /obj/item/clothing/under/paramedunilight
-	name = "Paramedic Uniform"
+	name = "\improper Paramedic Uniform"
 	desc = "A light jumpsuit for those brave souls who have to deal with a CMO who thinks they're the do everything person."
 	icon_state = "paramedic-light"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|ARMS|LEGS
 
 /obj/item/clothing/under/parameduniskirtlight
-	name = "Paramedic Uniskirt"
+	name = "\improper Paramedic Uniskirt"
 	desc = "A light jumpskirt for those brave souls who have to deal with a CMO who thinks they're the do everything person."
 	icon_state = "paramedic-light_skirt"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|ARMS
 
 /obj/item/clothing/under/dutchuniform
-	name = "Western suit"
+	name = "\improper Western suit"
 	desc = "We can't always fight nature. We can't fight change, we can't fight gravity, we can't fight nothing."
 	icon_state = "dutchuniform"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|ARMS|LEGS
@@ -1048,3 +1053,92 @@
 	desc = "A red and black dress befitting someone from the dark pits themselves....Or a thirteen year old."
 	icon_state = "fienddress"
 
+/obj/item/clothing/under/leotard
+	name = "black leotard"
+	desc = "A black leotard with a piece of semi-transparent cloth near the bust. Perfect for showing off cleavage. Bunny ears not included."
+	icon_state = "leotard"
+
+/obj/item/clothing/under/leotardcolor
+	name = "colored leotard"
+	desc = "A colorable leotard with a piece of semi-transparent cloth near the bust. Perfect for showing off cleavage. Bunny ears not included."
+	icon_state = "leotard_color"
+
+/obj/item/clothing/under/verglasdress
+    name = "verglas dress"
+    desc = "The modern twist on a forgotten pattern, the Verglas style utilizes comfortable velvet and silver white satin to create an otherworldly effect evocative of winter, or the void."
+    icon_state = "verglas_dress"
+
+/obj/item/clothing/under/fashionminiskirt
+    name = "fashionable miniskirt"
+    desc = "An impractically short miniskirt allegedly making waves through the local fashion scene."
+    icon_state = "miniskirt_fashion"
+
+/obj/item/clothing/under/bodysuit/bodysuiteva
+	name = "\improper EVA bodysuit"
+	desc = "A skin-tight synthetic bodysuit designed for comfort and mobility underneath hardsuits and voidsuits. This one has bright white plating for easy visibility and thick cuffs to lock into your thrust controls."
+	icon_state = "bodysuit_eva"
+
+/obj/item/clothing/under/bodysuit/bodysuitemt
+	name = "\improper EMT bodysuit"
+	desc = "A skin-tight synthetic bodysuit designed for comfort and mobility underneath hardsuits and voidsuits. This one sports a deep blue base with white and blue coloration."
+	icon_state = "bodysuit_emt"
+
+/obj/item/clothing/under/bodysuit/bodysuithazard
+	name = "hazard bodysuit"
+	desc = "A skin-tight synthetic bodysuit designed for comfort and mobility underneath hardsuits and voidsuits. This one sports a black base with striking orange plating and reflective stripes."
+	icon_state = "bodysuit_hazard"
+
+/obj/item/clothing/under/bodysuit/bodysuitexplocom
+	name = "exploration command bodysuit"
+	desc = "A skin-tight synthetic bodysuit designed for comfort and mobility underneath hardsuits and voidsuits. This one sports a black base with striking purple plating and eyecatching golden stripes."
+	icon_state = "bodysuit_pathfinder"
+
+/obj/item/clothing/under/bodysuit/bodysuitexplo
+	name = "exploration bodysuit"
+	desc = "A skin-tight synthetic bodysuit designed for comfort and mobility underneath hardsuits and voidsuits. This one sports a black base with striking purple plating."
+	icon_state = "bodysuit_explo"
+
+/obj/item/clothing/under/bodysuit/bodysuitminer
+	name = "mining bodysuit"
+	desc = "A skin-tight synthetic bodysuit designed for comfort and mobility underneath hardsuits and voidsuits. This one sports a dark grey base with tan and purple coloration."
+	icon_state = "bodysuit_miner"
+
+/obj/item/clothing/under/bodysuit/bodysuitsec
+	name = "security bodysuit"
+	desc = "A skin-tight synthetic bodysuit designed for comfort and mobility underneath hardsuits and voidsuits. This one sports a dark grey base with red and yellow coloration."
+	icon_state = "bodysuit_security"
+
+/obj/item/clothing/under/bodysuit/bodysuitsecmed
+	name = "security medical bodysuit"
+	desc = "A skin-tight synthetic bodysuit designed for comfort and mobility underneath hardsuits and voidsuits. This one sports a dark grey base with white plating an an eyecatching red trim."
+	icon_state = "bodysuit_secmed"
+
+/obj/item/clothing/under/bodysuit/bodysuitsecweewoo
+	name = "advanced security bodysuit"
+	desc = "A skin-tight synthetic bodysuit designed for comfort and mobility underneath hardsuits and voidsuits. This one sports a dark grey base with red and yellow coloration. The flashing lights fill you with confidence."
+	icon_state = "bodysuit_secweewoo"
+
+/obj/item/clothing/under/bodysuit/bodysuitseccom
+	name = "security command bodysuit"
+	desc = "A skin-tight synthetic bodysuit designed for comfort and mobility underneath hardsuits and voidsuits. This one sports a dark grey base with striking red plating and eyecatching golden stripes."
+	icon_state = "bodysuit_seccom"
+
+/obj/item/clothing/under/bodysuit/bodysuitcommand
+	name = "command bodysuit"
+	desc = "A skin-tight synthetic bodysuit designed for comfort and mobility underneath hardsuits and voidsuits. This one sports a flashy blue base with white plating and eyecatching golden stripes."
+	icon_state = "bodysuit_command"
+
+/obj/item/clothing/under/bodysuit/bodysuitcentcom
+	name = "central command bodysuit"
+	desc = "A skin-tight synthetic bodysuit designed for comfort and mobility underneath hardsuits and voidsuits. This one sports a sleek black base with an elegant golden trim and grey plating. It fits your corporate badges nicely."
+	icon_state = "bodysuit_centcom"
+
+/obj/item/clothing/under/bodysuit/blueskirt
+	name = "blue skirt"
+	desc = "A comfy blue sweater paired with a stylish charcoal skirt!"
+	icon_state = "blueskirt"
+
+/obj/item/clothing/under/bodysuit/redskirt
+	name = "blue skirt"
+	desc = "A comfy red sweater paired with a stylish charcoal skirt!"
+	icon_state = "redskirt"

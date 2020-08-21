@@ -44,7 +44,7 @@
 
 //mob verbs are faster than object verbs. See above.
 /mob/living/pointed(atom/A as mob|obj|turf in view())
-	if(src.stat || !src.canmove || src.restrained())
+	if(src.stat || src.restrained())
 		return 0
 	if(src.status_flags & FAKEDEATH)
 		return 0
@@ -1088,3 +1088,21 @@ default behaviour is:
 		BRAIN:<a href='?_src_=vars;mobToDamage=\ref[src];adjustDamage=brain'>[getBrainLoss()]</a>
 		</font>
 		"}
+
+/**
+  * Gets our standard pixel x offset.
+  *
+  * @params
+  * * lying : The degrees we're turned to while lying down or resting for any reason.
+  */
+/mob/living/proc/get_standard_pixel_x_offset(lying = 0)
+	return default_pixel_x
+
+/**
+  * Gets our standard pixel y offset.
+  *
+  * @params
+  * * lying : The degrees we're turned to while lying down or resting for any reason.
+  */
+/mob/living/proc/get_standard_pixel_y_offset(lying = 0)
+	return default_pixel_y

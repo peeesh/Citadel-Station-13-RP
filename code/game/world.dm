@@ -10,10 +10,15 @@
 
 */
 
+GLOBAL_VAR_INIT(tgs_initialized, FALSE)
+
 GLOBAL_VAR(topic_status_lastcache)
 GLOBAL_LIST(topic_status_cache)
 
 /world/New()
+	var/extools = world.GetConfig("env", "EXTOOLS_DLL") || (world.system_type == MS_WINDOWS ? "./byond-extools.dll" : "./libbyond-extools.so")
+	if (fexists(extools))
+		call(extools, "maptick_initialize")()
 	enable_debugger()
 
 	make_datum_reference_lists()
@@ -23,12 +28,11 @@ GLOBAL_LIST(topic_status_cache)
 	SetupExternalRsc()
 
 	var/tempfile = "data/logs/config_error.[GUID()].log"	//temporary file used to record errors with loading config, moved to log directory once logging is set
-	GLOB.config_error_log = GLOB.world_href_log = GLOB.world_runtime_log = GLOB.world_attack_log = GLOB.world_game_log = tempfile
-
-
-	TgsNew(minimum_required_security_level = TGS_SECURITY_TRUSTED)
+	GLOB.config_error_log = GLOB.world_href_log = GLOB.world_runtime_log = GLOB.world_map_error_log = GLOB.world_attack_log = GLOB.world_game_log = tempfile
 
 	GLOB.revdata = new
+
+	InitTgs()
 
 	config.Load(params[OVERRIDE_CONFIG_DIRECTORY_PARAMETER])
 
@@ -36,6 +40,9 @@ GLOBAL_LIST(topic_status_cache)
 
 #ifndef USE_CUSTOM_ERROR_HANDLER
 	world.log = file("[GLOB.log_directory]/dd.log")
+#else
+	if (TgsAvailable())
+		world.log = file("[GLOB.log_directory]/dd.log") //not all runtimes trigger world/Error, so this is the only way to ensure we can see all of them.
 #endif
 
 	config_legacy.post_load()
@@ -104,6 +111,11 @@ GLOBAL_LIST(topic_status_cache)
 
 	return
 
+/world/proc/InitTgs()
+	TgsNew(new /datum/tgs_event_handler/impl, TGS_SECURITY_TRUSTED)
+	GLOB.revdata.load_tgs_info()
+	GLOB.tgs_initialized = TRUE
+
 /world/proc/SetupExternalRsc()
 #if (PRELOAD_RSC == 0)
 	GLOB.external_rsc_urls = world.file2list("[global.config_legacy.directory]/external_rsc_urls.txt","\n")
@@ -141,6 +153,7 @@ GLOBAL_LIST(topic_status_cache)
 	GLOB.world_attack_log = "[GLOB.log_directory]/attack.log"
 	GLOB.world_href_log = "[GLOB.log_directory]/hrefs.log"
 	GLOB.world_qdel_log = "[GLOB.log_directory]/qdel.log"
+	GLOB.world_map_error_log = "[GLOB.log_directory]/map_errors.log"
 	GLOB.world_runtime_log = "[GLOB.log_directory]/runtime.log"
 	GLOB.subsystem_log = "[GLOB.log_directory]/subsystem.log"
 
@@ -148,6 +161,7 @@ GLOBAL_LIST(topic_status_cache)
 	start_log(GLOB.world_attack_log)
 	start_log(GLOB.world_href_log)
 	start_log(GLOB.world_qdel_log)
+	start_log(GLOB.world_map_error_log)
 	start_log(GLOB.world_runtime_log)
 	start_log(GLOB.subsystem_log)
 

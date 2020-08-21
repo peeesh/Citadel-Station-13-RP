@@ -62,3 +62,17 @@ other types of metals and chemistry for reagents).
 
 /datum/design/item
 	build_type = PROTOLATHE
+
+//Make sure items don't get free power
+/datum/design/item/Fabricate()
+	var/obj/item/I = ..()
+	var/obj/item/cell/C = I.get_cell()
+	if(C)
+		C.charge = 0
+		I.update_icon()
+	/* Uncomment this block when we realise scientists printing guns is kinda a problem.
+	if(istype(I, /obj/item/gun))
+		var/obj/item/gun/G = I
+		G.pin = null
+	*/
+	return I

@@ -311,7 +311,7 @@
 //
 /mob/living/proc/lick(var/mob/living/tasted in living_mobs(1))
 	set name = "Lick"
-	set category = "IC"
+	set category = "Vore"
 	set desc = "Lick someone nearby!"
 	set popup_menu = FALSE // Stop licking by accident!
 
@@ -351,7 +351,7 @@
 //
 /mob/living/proc/escapeOOC()
 	set name = "OOC Escape"
-	set category = "OOC"
+	set category = "Vore"
 
 	//You're in a belly!
 	if(isbelly(loc))
@@ -497,8 +497,8 @@
 /datum/gas_mixture/belly_air/New()
     . = ..()
     gas = list(
-        "oxygen" = 21,
-        "nitrogen" = 79)
+        /datum/gas/oxygen = 21,
+        /datum/gas/nitrogen = 79)
 
 // Procs for micros stuffed into boots and the like to escape from them
 /mob/living/proc/escape_clothes(obj/item/clothing/C)

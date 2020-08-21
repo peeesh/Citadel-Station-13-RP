@@ -9,7 +9,7 @@
 	canhear_range = 0 // can't hear headsets from very far away
 	slot_flags = SLOT_EARS
 	sprite_sheets = list(
-		SPECIES_TESHARI = 'icons/mob/species/seromi/ears.dmi',
+		SPECIES_TESHARI = 'icons/mob/species/teshari/ears.dmi',
 		SPECIES_VOX = 'icons/mob/species/vox/ears.dmi'
 		)
 
@@ -49,10 +49,10 @@
 /obj/item/radio/headset/handle_message_mode(mob/living/M as mob, message, channel)
 	if (channel == "special")
 		if (translate_binary)
-			var/datum/language/binary = all_languages["Robot Talk"]
+			var/datum/language/binary = GLOB.all_languages["Robot Talk"]
 			binary.broadcast(M, message)
 		if (translate_hive)
-			var/datum/language/hivemind = all_languages["Hivemind"]
+			var/datum/language/hivemind = GLOB.all_languages["Hivemind"]
 			hivemind.broadcast(M, message)
 		return null
 
@@ -177,13 +177,13 @@
 
 
 /obj/item/radio/headset/heads/captain
-	name = "colony director's headset"
+	name = "Facility Director's headset"
 	desc = "The headset of the boss."
 	icon_state = "com_headset"
 	ks2type = /obj/item/encryptionkey/heads/captain
 
 /obj/item/radio/headset/heads/captain/alt
-	name = "colony director's bowman headset"
+	name = "Facility Director's bowman headset"
 	desc = "The headset of the boss."
 	icon_state = "com_headset_alt"
 	ks2type = /obj/item/encryptionkey/heads/captain
@@ -259,13 +259,13 @@
 
 /obj/item/radio/headset/heads/hop
 	name = "head of personnel's headset"
-	desc = "The headset of the guy who will one day be Colony Director."
+	desc = "The headset of the guy who will one day be Facility Director."
 	icon_state = "com_headset"
 	ks2type = /obj/item/encryptionkey/heads/hop
 
 /obj/item/radio/headset/heads/hop/alt
 	name = "head of personnel's bowman headset"
-	desc = "The headset of the guy who will one day be Colony Director."
+	desc = "The headset of the guy who will one day be Facility Director."
 	icon_state = "com_headset_alt"
 	ks2type = /obj/item/encryptionkey/heads/hop
 

@@ -83,7 +83,7 @@ SUBSYSTEM_DEF(ticker)
 			round_process()
 
 /datum/controller/subsystem/ticker/proc/on_mc_init_finish()
-	send2mainirc("Server lobby is loaded and open at byond://[config_legacy.serverurl ? config_legacy.serverurl : (config_legacy.server ? config_legacy.server : "[world.address]:[world.port]")]")
+	send2irc("Server lobby is loaded and open at byond://[config_legacy.serverurl ? config_legacy.serverurl : (config_legacy.server ? config_legacy.server : "[world.address]:[world.port]")]")
 	to_chat(world, "<span class='boldnotice'>Welcome to the pregame lobby!</span>")
 	to_chat(world, "Please set up your character and select ready. The round will start in [CONFIG_GET(number/lobby_countdown)] seconds.")
 	current_state = GAME_STATE_PREGAME
@@ -247,7 +247,7 @@ SUBSYSTEM_DEF(ticker)
 		if(C.holder)
 			admins_number++
 	if(admins_number == 0)
-		send2adminirc("A round has started with no admins online.")
+		send2irc("A round has started with no admins online.")
 
 /*	SSsupply.process() 		//Start the supply shuttle regenerating points -- TLE // handled in scheduler
 	master_controller.process()		//Start master_controller.process()
@@ -391,7 +391,7 @@ SUBSYSTEM_DEF(ticker)
 	var/captainless=1
 	for(var/mob/living/carbon/human/player in player_list)
 		if(player && player.mind && player.mind.assigned_role)
-			if(player.mind.assigned_role == "Colony Director")
+			if(player.mind.assigned_role == "Facility Director")
 				captainless=0
 			if(!player_is_antag(player.mind, only_offstation_roles = 1))
 				SSjobs.EquipRank(player, player.mind.assigned_role, 0)
@@ -401,7 +401,7 @@ SUBSYSTEM_DEF(ticker)
 	if(captainless)
 		for(var/mob/M in player_list)
 			if(!istype(M,/mob/new_player))
-				to_chat(M, "Colony Directorship not forced on anyone.")
+				to_chat(M, "Facility Directorship not forced on anyone.")
 
 
 /datum/controller/subsystem/ticker/proc/round_process()
@@ -437,6 +437,10 @@ SUBSYSTEM_DEF(ticker)
 		if(blackbox)
 			blackbox.save_all_data_to_sql()
 
+		send2irc("Server", "A round of [mode.name] just ended.")
+		world.TgsTargetedChatBroadcast("The round has ended.", FALSE)
+
+		SSpersistence.SavePersistence()
 		ready_for_reboot = TRUE
 		standard_reboot()
 

@@ -58,8 +58,8 @@
 					return 0
 				var/fly_time = max(7 SECONDS + (H.movement_delay() * 10), 1) //So it's not too useful for combat. Could make this variable somehow, but that's down the road.
 				to_chat(src, "<span class='notice'>You begin to fly upwards...</span>")
-				destination.audible_message("<span class='notice'>You hear the flapping of wings.</span>")
-				H.audible_message("<span class='notice'>[H] begins to flap \his wings, preparing to move upwards!</span>")
+				destination.audible_message("<span class='notice'>You hear the of air moving.</span>")
+				H.audible_message("<span class='notice'>[H] begins to soar upwards!</span>")
 				if(do_after(H, fly_time) && H.flying)
 					to_chat(src, "<span class='notice'>You fly upwards.</span>")
 				else
@@ -269,7 +269,7 @@
 		return FALSE
 
 	var/turf/below = GetBelow(src)
-	if((locate(/obj/structure/disposalpipe/up) in below) || locate(/obj/machinery/atmospherics/pipe/zpipe/up in below))
+	if((locate(/obj/structure/disposalpipe/up) in below) || (locate(/obj/machinery/atmospherics/pipe/zpipe/up) in below))
 		return FALSE
 
 /mob/living/can_fall()

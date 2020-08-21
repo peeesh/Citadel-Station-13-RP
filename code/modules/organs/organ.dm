@@ -65,7 +65,7 @@ var/list/organ_cache = list()
 	if(istype(holder))
 		src.owner = holder
 		src.w_class = max(src.w_class + mob_size_difference(holder.mob_size, MOB_MEDIUM), 1) //smaller mobs have smaller organs.
-		species = all_species[SPECIES_HUMAN]
+		species = GLOB.all_species[SPECIES_HUMAN]
 		if(holder.dna)
 			dna = holder.dna.Clone()
 			species = holder.species //VOREStation Edit - For custom species
@@ -87,7 +87,7 @@ var/list/organ_cache = list()
 		if(internal)
 			holder.internal_organs |= src
 	else
-		species = all_species["Human"]
+		species = GLOB.all_species["Human"]
 
 	handle_organ_mod_special()
 
@@ -109,7 +109,7 @@ var/list/organ_cache = list()
 		owner.can_defib = 0
 
 /obj/item/organ/proc/adjust_germ_level(var/amount)		// Unless you're setting germ level directly to 0, use this proc instead
-	germ_level = CLAMP(germ_level + amount, 0, INFECTION_LEVEL_MAX)
+	germ_level = clamp(germ_level + amount, 0, INFECTION_LEVEL_MAX)
 
 /obj/item/organ/process()
 

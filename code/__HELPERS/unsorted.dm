@@ -16,14 +16,10 @@
 
 //Inverts the colour of an HTML string
 /proc/invertHTML(HTMLstring)
-
 	if (!( istext(HTMLstring) ))
 		CRASH("Given non-text argument!")
-		return
-	else
-		if (length(HTMLstring) != 7)
-			CRASH("Given non-HTML argument!")
-			return
+	else if(length(HTMLstring) != 7)
+		CRASH("Given non-HTML argument!")
 	var/textr = copytext(HTMLstring, 2, 4)
 	var/textg = copytext(HTMLstring, 4, 6)
 	var/textb = copytext(HTMLstring, 6, 8)
@@ -40,18 +36,6 @@
 	if (length(textb) < 2)
 		textr = text("0[]", textb)
 	return text("#[][][]", textr, textg, textb)
-	return
-
-//Returns the middle-most value
-/proc/dd_range(var/low, var/high, var/num)
-	return max(low,min(high,num))
-
-//Returns whether or not A is the middle most value
-/proc/InRange(var/A, var/lower, var/upper)
-	if(A < lower) return 0
-	if(A > upper) return 0
-	return 1
-
 
 /proc/Get_Angle(atom/movable/start,atom/movable/end)//For beams.
 	if(!start || !end) return 0
@@ -452,13 +436,15 @@ Turf and target are seperate in case you want to teleport some distance from a t
 	return new_list
 
 //Returns a list of all mobs with their name
-/proc/getmobs()
+/proc/getmobs(ghostfollow = FALSE)
 
 	var/list/mobs = sortmobs()
 	var/list/names = list()
 	var/list/creatures = list()
 	var/list/namecounts = list()
 	for(var/mob/M in mobs)
+		if(isobserver(M) && ghostfollow && M.client?.holder && M.client.holder.fakekey && M.is_preference_enabled(/datum/client_preference/holder/stealth_ghost_mode))
+			continue
 		var/name = M.name
 		if (name in names)
 			namecounts[name]++
@@ -476,6 +462,9 @@ Turf and target are seperate in case you want to teleport some distance from a t
 		creatures[name] = M
 
 	return creatures
+
+/proc/getmobs_ghost_follow()
+	return getmobs(TRUE)
 
 //Orders mobs by type then by name
 /proc/sortmobs()
@@ -1118,8 +1107,6 @@ proc/is_hot(obj/item/W as obj)
 			return 3500
 		else
 			return 0
-
-	return 0
 
 //Whether or not the given item counts as sharp in terms of dealing damage
 /proc/is_sharp(obj/O as obj)

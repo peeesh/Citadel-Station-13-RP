@@ -72,11 +72,11 @@
 
 
 /datum/gear/uniform/plascapalt
-	display_name = "alternate colony director helmet (phoronoid)"
+	display_name = "alternate Facility Director helmet (phoronoid)"
 	path = /obj/item/clothing/head/helmet/space/plasman/sec/captain/alt
 	sort_category = "Xenowear"
 	whitelisted = SPECIES_PLASMAMAN
-	allowed_roles = list("Colony Director")
+	allowed_roles = list("Facility Director")
 
 /datum/gear/uniform/plashosalt1
 	display_name = "alternate head of security helmet 1 (phoronoid)"
@@ -104,3 +104,18 @@
 		var/obj/item/clothing/accessory/plasman/plasaccessory_type = plasman
 		plasaccessories[initial(plasaccessory_type.name)] = plasaccessory_type
 	gear_tweaks += new/datum/gear_tweak/path(sortTim(plasaccessories, /proc/cmp_text_asc, TRUE))
+
+//Added from CHOMP
+/datum/gear/suit/hood
+	display_name = "hooded cloak selection (Teshari)"
+	path = /obj/item/clothing/suit/storage/teshari/cloak/standard
+	whitelisted = SPECIES_TESHARI
+	sort_category = "Xenowear"
+
+/datum/gear/suit/hood/New()
+	..()
+	var/list/cloaks = list()
+	for(var/cloak in typesof(/obj/item/clothing/suit/storage/hooded/teshari/standard))
+		var/obj/item/clothing/suit/storage/teshari/cloak/cloak_type = cloak
+		cloaks[initial(cloak_type.name)] = cloak_type
+	gear_tweaks += new/datum/gear_tweak/path(sortTim(cloaks, /proc/cmp_text_asc, TRUE))

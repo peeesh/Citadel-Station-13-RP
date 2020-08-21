@@ -296,7 +296,7 @@
 /obj/item/integrated_circuit/input/advanced_locator/on_data_written()
 	var/rad = get_pin_data(IC_INPUT, 2)
 	if(isnum(rad))
-		rad = CLAMP(rad, 0, 7)
+		rad = clamp(rad, 0, 7)
 		radius = rad
 
 /obj/item/integrated_circuit/input/advanced_locator/do_work()
@@ -571,7 +571,7 @@
 /obj/item/integrated_circuit/input/microphone/sign/Initialize()
 	..()
 	for(var/lang in readable_langs)
-		var/datum/language/newlang = all_languages[lang]
+		var/datum/language/newlang = GLOB.all_languages[lang]
 		my_langs |= newlang
 
 /obj/item/integrated_circuit/input/microphone/sign/hear_talk(mob/living/M, msg, var/verb="says", datum/language/speaking=null)
@@ -726,10 +726,10 @@
 	var/total_moles = environment.total_moles
 
 	if (total_moles)
-		var/o2_level = environment.gas["oxygen"]/total_moles
-		var/n2_level = environment.gas["nitrogen"]/total_moles
-		var/co2_level = environment.gas["carbon_dioxide"]/total_moles
-		var/phoron_level = environment.gas["phoron"]/total_moles
+		var/o2_level = environment.gas[/datum/gas/oxygen]/total_moles
+		var/n2_level = environment.gas[/datum/gas/nitrogen]/total_moles
+		var/co2_level = environment.gas[/datum/gas/carbon_dioxide]/total_moles
+		var/phoron_level = environment.gas[/datum/gas/phoron]/total_moles
 		var/unknown_level =  1-(o2_level+n2_level+co2_level+phoron_level)
 		set_pin_data(IC_OUTPUT, 1, pressure)
 		set_pin_data(IC_OUTPUT, 2, round(environment.temperature-T0C,0.1))
@@ -831,7 +831,7 @@
 	var/total_moles = environment.total_moles
 
 	if (total_moles)
-		var/o2_level = environment.gas["oxygen"]/total_moles
+		var/o2_level = environment.gas[/datum/gas/oxygen]/total_moles
 		set_pin_data(IC_OUTPUT, 1, round(o2_level*100,0.1))
 	else
 		set_pin_data(IC_OUTPUT, 1, 0)
@@ -861,7 +861,7 @@
 	var/total_moles = environment.total_moles
 
 	if (total_moles)
-		var/co2_level = environment.gas["carbon_dioxide"]/total_moles
+		var/co2_level = environment.gas[/datum/gas/carbon_dioxide]/total_moles
 		set_pin_data(IC_OUTPUT, 1, round(co2_level*100,0.1))
 	else
 		set_pin_data(IC_OUTPUT, 1, 0)
@@ -891,7 +891,7 @@
 	var/total_moles = environment.total_moles
 
 	if (total_moles)
-		var/n2_level = environment.gas["nitrogen"]/total_moles
+		var/n2_level = environment.gas[/datum/gas/nitrogen]/total_moles
 		set_pin_data(IC_OUTPUT, 1, round(n2_level*100,0.1))
 	else
 		set_pin_data(IC_OUTPUT, 1, 0)
@@ -921,7 +921,7 @@
 	var/total_moles = environment.total_moles
 
 	if (total_moles)
-		var/phoron_level = environment.gas["phoron"]/total_moles
+		var/phoron_level = environment.gas[/datum/gas/phoron]/total_moles
 		set_pin_data(IC_OUTPUT, 1, round(phoron_level*100,0.1))
 	else
 		set_pin_data(IC_OUTPUT, 1, 0)

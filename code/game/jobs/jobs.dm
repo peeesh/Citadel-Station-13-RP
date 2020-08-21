@@ -45,12 +45,17 @@ var/const/BRIDGE			=(1<<12)
 var/const/CLOWN				=(1<<13) //VOREStation Add
 var/const/MIME				=(1<<14) //VOREStation Add
 
+var/const/PATHFINDER 		=(1<<11)
+var/const/EXPLORER 			=(1<<12)
+var/const/PILOT 			=(1<<13)
+var/const/SAR 				=(1<<14)
+
 var/list/assistant_occupations = list(
 )
 
 
 var/list/command_positions = list(
-	"Colony Director",
+	"Facility Director",
 	"Head of Personnel",
 	"Head of Security",
 	"Chief Engineer",

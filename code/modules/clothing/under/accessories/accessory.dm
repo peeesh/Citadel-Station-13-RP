@@ -15,7 +15,7 @@
 	var/mob/living/carbon/human/wearer = null //To check if the wearer changes, so species spritesheets change properly.
 	var/list/on_rolled = list()	//used when jumpsuit sleevels are rolled ("rolled" entry) or it's rolled down ("down"). Set to "none" to hide in those states.
 	sprite_sheets = list(
-		SPECIES_TESHARI = 'icons/mob/species/seromi/ties.dmi', //Teshari can into webbing, too!
+		SPECIES_TESHARI = 'icons/mob/species/teshari/ties.dmi', //Teshari can into webbing, too!
 		SPECIES_VOX = 'icons/mob/species/vox/ties.dmi')
 
 /obj/item/clothing/accessory/Destroy()
@@ -423,3 +423,30 @@
 	desc = "A plain, unadorned sash."
 	icon_state = "sash"
 	slot = ACCESSORY_SLOT_OVER
+
+/obj/item/clothing/accessory/necklace
+	name = "necklace"
+	desc = "Alt-click to name and add a description."
+	icon_state = "locket"
+	var/described = FALSE
+	var/named = FALSE
+	var/coloured = FALSE
+
+/obj/item/clothing/accessory/necklace/AltClick(mob/user)
+	if(!named)
+		var/inputname = sanitizeSafe(input("Enter a prefix for the necklace's name.", ,""), MAX_NAME_LEN)
+		if(src && inputname && in_range(user,src))
+			name = "[inputname] necklace"
+			to_chat(user, "You describe the [name].")
+			named = TRUE
+	if(!described)
+		var/inputdesc = sanitizeSafe(input("Enter the new description for the necklace. 2048 character limit.", ,""), 2048) // 2048 character limit
+		if(src && inputdesc && in_range(user,src))
+			desc = "[inputdesc]"
+			to_chat(user, "You describe the [name].")
+			described = TRUE
+	if(!coloured)
+		var/colour_input = input(usr,"","Choose Color",color) as color|null
+		if(colour_input)
+			color = sanitize_hexcolor(colour_input)
+			coloured = TRUE

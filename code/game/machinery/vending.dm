@@ -13,7 +13,7 @@
 	var/icon_deny //Icon_state when denying access
 
 	// Power
-	use_power = 1
+	use_power = USE_POWER_IDLE
 	idle_power_usage = 10
 	var/vend_power_usage = 150 //actuators and stuff
 
@@ -709,6 +709,7 @@
 					/obj/item/reagent_containers/food/drinks/bottle/small/ale = 15,
 					/obj/item/reagent_containers/food/drinks/bottle/small/beer = 15,
 					/obj/item/reagent_containers/food/drinks/bottle/small/cider = 15,
+					/obj/item/reagent_containers/food/drinks/bottle/small/alcsassafras = 15,
 					/obj/item/reagent_containers/food/drinks/bottle/orangejuice = 5,
 					/obj/item/reagent_containers/food/drinks/bottle/tomatojuice = 5,
 					/obj/item/reagent_containers/food/drinks/bottle/limejuice = 5,
@@ -766,11 +767,13 @@
 	icon_state = "snack"
 	products = list(/obj/item/reagent_containers/food/snacks/candy = 6,/obj/item/reagent_containers/food/drinks/dry_ramen = 6,/obj/item/reagent_containers/food/snacks/chips =6,
 					/obj/item/reagent_containers/food/snacks/sosjerky = 6,/obj/item/reagent_containers/food/snacks/no_raisin = 6,/obj/item/reagent_containers/food/snacks/spacetwinkie = 6,
-					/obj/item/reagent_containers/food/snacks/cheesiehonkers = 6, /obj/item/reagent_containers/food/snacks/tastybread = 6, /obj/item/reagent_containers/food/snacks/skrellsnacks = 3)
+					/obj/item/reagent_containers/food/snacks/cheesiehonkers = 6, /obj/item/reagent_containers/food/snacks/tastybread = 6, /obj/item/reagent_containers/food/snacks/skrellsnacks = 3,
+					/obj/item/reagent_containers/food/snacks/baschbeans = 6, /obj/item/reagent_containers/food/snacks/creamcorn = 6)
 	contraband = list(/obj/item/reagent_containers/food/snacks/syndicake = 6,/obj/item/reagent_containers/food/snacks/unajerky = 6,)
 	prices = list(/obj/item/reagent_containers/food/snacks/candy = 1,/obj/item/reagent_containers/food/drinks/dry_ramen = 5,/obj/item/reagent_containers/food/snacks/chips = 1,
 					/obj/item/reagent_containers/food/snacks/sosjerky = 2,/obj/item/reagent_containers/food/snacks/no_raisin = 1,/obj/item/reagent_containers/food/snacks/spacetwinkie = 1,
-					/obj/item/reagent_containers/food/snacks/cheesiehonkers = 1, /obj/item/reagent_containers/food/snacks/tastybread = 2, /obj/item/reagent_containers/food/snacks/skrellsnacks = 4)
+					/obj/item/reagent_containers/food/snacks/cheesiehonkers = 1, /obj/item/reagent_containers/food/snacks/tastybread = 2, /obj/item/reagent_containers/food/snacks/skrellsnacks = 4,
+					/obj/item/reagent_containers/food/snacks/baschbeans = 6, /obj/item/reagent_containers/food/snacks/creamcorn = 6)
 
 /obj/machinery/vending/cola
 	name = "Robust Softdrinks"
@@ -783,13 +786,15 @@
 					/obj/item/reagent_containers/food/drinks/cans/dr_gibb = 10,/obj/item/reagent_containers/food/drinks/cans/starkist = 10,
 					/obj/item/reagent_containers/food/drinks/cans/waterbottle = 10,/obj/item/reagent_containers/food/drinks/cans/space_up = 10,
 					/obj/item/reagent_containers/food/drinks/cans/iced_tea = 10, /obj/item/reagent_containers/food/drinks/cans/grape_juice = 10,
-					/obj/item/reagent_containers/food/drinks/cans/gingerale = 10)
+					/obj/item/reagent_containers/food/drinks/cans/gingerale = 10, /obj/item/reagent_containers/food/drinks/bottle/small/sarsaparilla = 10,
+					/obj/item/reagent_containers/food/drinks/bottle/small/sassafras = 10)
 	contraband = list(/obj/item/reagent_containers/food/drinks/cans/thirteenloko = 5, /obj/item/reagent_containers/food/snacks/liquidfood = 6)
 	prices = list(/obj/item/reagent_containers/food/drinks/cans/cola = 1,/obj/item/reagent_containers/food/drinks/cans/space_mountain_wind = 1,
 					/obj/item/reagent_containers/food/drinks/cans/dr_gibb = 1,/obj/item/reagent_containers/food/drinks/cans/starkist = 1,
 					/obj/item/reagent_containers/food/drinks/cans/waterbottle = 2,/obj/item/reagent_containers/food/drinks/cans/space_up = 1,
 					/obj/item/reagent_containers/food/drinks/cans/iced_tea = 1,/obj/item/reagent_containers/food/drinks/cans/grape_juice = 1,
-					/obj/item/reagent_containers/food/drinks/cans/gingerale = 1)
+					/obj/item/reagent_containers/food/drinks/cans/gingerale = 1, /obj/item/reagent_containers/food/drinks/bottle/small/sarsaparilla = 1,
+					/obj/item/reagent_containers/food/drinks/bottle/small/sassafras = 1)
 	idle_power_usage = 211 //refrigerator - believe it or not, this is actually the average power consumption of a refrigerated vending machine according to NRCan.
 
 /obj/machinery/vending/fitness // Added Liquid Protein and slightly adjusted price of liquid food items due to buff.
@@ -1018,7 +1023,8 @@
 	/obj/item/storage/toolbox/lunchbox/mars = 3,
 	/obj/item/storage/toolbox/lunchbox/cti = 3,
 	/obj/item/storage/toolbox/lunchbox/nymph = 3,
-	/obj/item/storage/toolbox/lunchbox/syndicate = 3)
+	/obj/item/storage/toolbox/lunchbox/syndicate = 3,
+	/obj/item/storage/toolbox/lunchbox/cyancowgirl = 3)
 	contraband = list(/obj/item/material/knife/butch = 2)
 
 /obj/machinery/vending/sovietsoda
@@ -1130,7 +1136,14 @@
 					/obj/item/toy/plushie/face_hugger = 1,
 					/obj/item/toy/plushie/carp = 1,
 					/obj/item/toy/plushie/deer = 1,
-					/obj/item/toy/plushie/tabby_cat = 1)
+					/obj/item/toy/plushie/tabby_cat = 1,
+					/obj/item/toy/plushie/cyancowgirl = 1,
+					/obj/item/toy/plushie/bear_grizzly = 2,
+					/obj/item/toy/plushie/bear_polar = 2,
+					/obj/item/toy/plushie/bear_panda = 2,
+					/obj/item/toy/plushie/bear_soda = 2,
+					/obj/item/toy/plushie/bear_bloody = 2,
+					/obj/item/toy/plushie/bear_space = 1)
 	premium = list(/obj/item/reagent_containers/food/drinks/bottle/champagne = 1,
 					/obj/item/storage/trinketbox = 2)
 	prices = list(/obj/item/storage/fancy/heartbox = 15,
@@ -1158,7 +1171,14 @@
 					/obj/item/toy/plushie/face_hugger = 50,
 					/obj/item/toy/plushie/carp = 50,
 					/obj/item/toy/plushie/deer = 50,
-					/obj/item/toy/plushie/tabby_cat = 50)
+					/obj/item/toy/plushie/tabby_cat = 50,
+					/obj/item/toy/plushie/cyancowgirl = 50,
+					/obj/item/toy/plushie/bear_grizzly = 20,
+					/obj/item/toy/plushie/bear_polar = 20,
+					/obj/item/toy/plushie/bear_panda = 20,
+					/obj/item/toy/plushie/bear_soda = 35,
+					/obj/item/toy/plushie/bear_bloody = 35,
+					/obj/item/toy/plushie/bear_space = 50)
 
 /obj/machinery/vending/fishing
 	name = "Loot Trawler"

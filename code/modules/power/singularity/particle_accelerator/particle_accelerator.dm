@@ -247,9 +247,6 @@ So, hopefully this is helpful if any more icons are to be added/changed/wonderin
 			update_state()
 		update_icon()
 		return 1
-	return 0
-
-
 
 /obj/machinery/particle_accelerator
 	name = "Particle Accelerator"
@@ -258,7 +255,7 @@ So, hopefully this is helpful if any more icons are to be added/changed/wonderin
 	icon_state = "none"
 	anchored = 0
 	density = 1
-	use_power = 0
+	use_power = USE_POWER_OFF
 	idle_power_usage = 0
 	active_power_usage = 0
 	var/construction_state = 0
@@ -383,10 +380,9 @@ So, hopefully this is helpful if any more icons are to be added/changed/wonderin
 		if(src.construction_state < 3)//Was taken apart, update state
 			update_state()
 			if(use_power)
-				use_power = 0
+				update_use_power(USE_POWER_OFF)
 		src.construction_state = temp_state
 		if(src.construction_state >= 3)
-			use_power = 1
+			update_use_power(USE_POWER_IDLE)
 		update_icon()
 		return 1
-	return 0

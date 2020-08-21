@@ -28,8 +28,9 @@
 		tally += (health_deficiency / 25)
 
 	if(can_feel_pain())
-		if(halloss >= 10)
-			tally += (halloss / 10) //halloss shouldn't slow you down if you can't even feel it
+		if(!(CE_SPEEDBOOST in chem_effects)) //Hyperzine stops pain slowdown
+			if(halloss >= 10)
+				tally += (halloss / 10) //halloss shouldn't slow you down if you can't even feel it
 
 	var/hungry = (500 - nutrition)/5 // So overeat would be 100 and default level would be 80
 	if (hungry >= 70)
@@ -92,7 +93,10 @@
 	tally += calculate_turf_slowdown(T, direct)
 
 	// Item related slowdown.
-	var/item_tally = calculate_item_encumbrance()
+	if(!(CE_SPEEDBOOST in chem_effects)) //Hyperzine ignores item slowdown
+		var/item_tally = calculate_item_encumbrance()
+		item_tally *= species.item_slowdown_mod
+		tally += item_tally
 
 	/* removed - kevinz000. A system will eventually be reintroduced to do this, but for the moment I'd rather this Not be a thing.
 	// Dragging heavy objects will also slow you down, similar to above.
@@ -106,19 +110,10 @@
 			item_tally = max(item_tally, their_slowdown) // If our slowdown is less than theirs, then we become as slow as them (before species modifires).
 	*/
 
-	item_tally *= species.item_slowdown_mod
-
-	tally += item_tally
-
 	if(CE_SLOWDOWN in chem_effects)
 		if (tally >= 0 )
 			tally = (tally + tally/4) //Add a quarter of penalties on top.
 		tally += chem_effects[CE_SLOWDOWN]
-
-	if(CE_SPEEDBOOST in chem_effects)
-		if (tally >= 0)	// cut any penalties in half
-			tally = tally/2
-		tally -= chem_effects[CE_SPEEDBOOST]	// give 'em a buff on top.
 
 	return max(HUMAN_LOWEST_SLOWDOWN, tally + . + config_legacy.human_delay)	// Minimum return should be the same as force_max_speed
 
@@ -148,20 +143,20 @@
 		var/turf_move_cost = T.movement_cost
 		if(istype(T, /turf/simulated/floor/water))
 			if(species.water_movement)
-				turf_move_cost = CLAMP(HUMAN_LOWEST_SLOWDOWN, turf_move_cost + species.water_movement, 15)
+				turf_move_cost = clamp(HUMAN_LOWEST_SLOWDOWN, turf_move_cost + species.water_movement, 15)
 			if(shoes)
 				var/obj/item/clothing/shoes/feet = shoes
 				if(feet.water_speed)
-					turf_move_cost = CLAMP(HUMAN_LOWEST_SLOWDOWN, turf_move_cost + feet.water_speed, 15)
+					turf_move_cost = clamp(HUMAN_LOWEST_SLOWDOWN, turf_move_cost + feet.water_speed, 15)
 			. += turf_move_cost
 
 		if(istype(T, /turf/simulated/floor/outdoors/snow))
 			if(species.snow_movement)
-				turf_move_cost = CLAMP(HUMAN_LOWEST_SLOWDOWN, turf_move_cost + species.snow_movement, 15)
+				turf_move_cost = clamp(HUMAN_LOWEST_SLOWDOWN, turf_move_cost + species.snow_movement, 15)
 			if(shoes)
 				var/obj/item/clothing/shoes/feet = shoes
 				if(feet.water_speed)
-					turf_move_cost = CLAMP(HUMAN_LOWEST_SLOWDOWN, turf_move_cost + feet.snow_speed, 15)
+					turf_move_cost = clamp(HUMAN_LOWEST_SLOWDOWN, turf_move_cost + feet.snow_speed, 15)
 			. += turf_move_cost
 
 	// Wind makes it easier or harder to move, depending on if you're with or against the wind.

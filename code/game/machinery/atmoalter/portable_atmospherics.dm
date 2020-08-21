@@ -1,6 +1,6 @@
 /obj/machinery/portable_atmospherics
 	name = "atmoalter"
-	use_power = 0
+	use_power = USE_POWER_OFF
 	layer = OBJ_LAYER // These are mobile, best not be under everything.
 	var/datum/gas_mixture/air_contents = new
 
@@ -46,8 +46,8 @@
 
 /obj/machinery/portable_atmospherics/proc/StandardAirMix()
 	return list(
-		"oxygen" = O2STANDARD * MolesForPressure(),
-		"nitrogen" = N2STANDARD *  MolesForPressure())
+		/datum/gas/oxygen = O2STANDARD * MolesForPressure(),
+		/datum/gas/nitrogen = N2STANDARD *  MolesForPressure())
 
 /obj/machinery/portable_atmospherics/proc/MolesForPressure(var/target_pressure = start_pressure)
 	return (target_pressure * air_contents.volume) / (R_IDEAL_GAS_EQUATION * air_contents.temperature)

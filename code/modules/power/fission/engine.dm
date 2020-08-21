@@ -373,10 +373,11 @@
 
 /obj/machinery/power/fission/proc/announce_warning(var/meltedrods, var/meltingrods, var/core_overheat)
 	if(src.powered() && !exploded && (meltedrods > 0 || meltingrods > 0 || temperature >= max_temp))
+		var/location = sanitize((get_area(src)).name)
 		if((world.timeofday - lastwarning) >= warning_delay * 10)
 			lastwarning = world.timeofday
 			if(core_overheat)
-				radio.autosay("Danger! Fission core is overheating!", "Nuclear Monitor")
+				radio.autosay("Danger! Fission core at [location] is overheating!", "Nuclear Monitor")
 			else if(meltedrods > 0 && meltingrods > 0)
 				radio.autosay("Warning! [meltedrods] rods have melted and [meltingrods] are overheating!", "Nuclear Monitor", "Engineering")
 			else if(meltedrods > 0)
@@ -392,6 +393,9 @@
 
 /obj/machinery/power/fission/proc/go_nuclear()
 	if(health < 1 && !exploded)
+		var/off_station = 0
+		if(!(src.z in GLOB.using_map.station_levels))
+			off_station = 1
 		var/turf/L = get_turf(src)
 		if(!istype(L))
 			return
@@ -410,19 +414,17 @@
 			rod.meltdown()
 		var/rad_power = decay_heat / REACTOR_RADS_TO_MJ
 		if(announce)
-			var/sound = sound('sound/effects/carter_alarm_cut.ogg')
-			for(var/a in player_list)
-				var/mob/M = a
-				var/turf/T = get_turf(M)
-				if(T.z == L.z)
-					M.playsound_local(T, soundin = sound, vol = 50, vary = FALSE, is_global = TRUE)
+			var/sound = sound('sound/effects/nuclear_meltdown.ogg')
+			if(!off_station)
+				for(var/mob/M in player_list)
+					SEND_SOUND(M,sound)
 			spawn(1 SECONDS)
-				radio.autosay("Danger! Fission core has breached!", "Nuclear Monitor")
-				radio.autosay("Find shelter immediately!", "Nuclear Monitor")
+				radio.autosay("DANGER! FISSION CORE HAS BREACHED!", "Nuclear Monitor")
+				radio.autosay("FIND SHELTER IMMEDIATELY!", "Nuclear Monitor")
 			spawn(5 SECONDS)
-				radio.autosay("Core breach! Find shelter immediately!", "Nuclear Monitor")
+				radio.autosay("CORE BREACH! FIND SHELTER IMMEDIATELY!", "Nuclear Monitor")
 			spawn(10 SECONDS)
-				radio.autosay("Core breach! Find shelter immediately!", "Nuclear Monitor")
+				radio.autosay("CORE BREACH! FIND SHELTER IMMEDIATELY!", "Nuclear Monitor")
 
 		// Give the alarm time to play. Then... FLASH! AH-AH!
 		spawn(15 SECONDS)
@@ -472,4 +474,110 @@
 			var/explosion_power = 4 * decaying_rods
 			if(explosion_power < 1) // If you remove the rods but it's over heating, it's still gunna go bang, but without going nuclear.
 				explosion_power = 1
+			if(off_station)
+				explosion_power = explosion_power/3 //Bandaid fix. Reduces effectiveness of using a fission reactor for mining.
 			explosion(L, explosion_power, explosion_power * 2, explosion_power * 3, explosion_power * 4, 1)
+			if(L.z == 13) // underdark z but hardcoded
+				now_you_done_it(L)
+
+/obj/machinery/power/fission/proc/now_you_done_it(var/turf/L)
+	spawn(3 SECONDS)
+	if (!istype(L))
+		return
+	var/tx = L.x - 3
+	var/ty = L.y - 3
+	var/turf/spider_spawn
+	for(var/iy = 0,iy < 6, iy++)
+		for(var/ix = 0, ix < 6, ix++)
+			spider_spawn = locate(tx + ix, ty + iy, L.z)
+			if (!istype(spider_spawn, /turf/space))
+				for (var/i = 0, i < rand(1,3), i++)
+					var/a_problem = /obj/nuclear_mistake_spawner
+					new a_problem(spider_spawn)
+
+// i know this really shouldn't be the place to put all the code to this but travis is bitching out at me
+// see Citadel-Station-13/Citadel-Station-13-RP#2039 for why i had to shove all this in here
+// code from _tether_submaps.dm, only pasted here for travis "compliance"
+// fuck this
+/obj/nuclear_mistake_spawner
+	name = "the Underdark's revenge"
+	desc = "hardcoded piece of that that should never be seen PLEASE report this if you do"
+	icon = 'icons/mob/screen1.dmi'
+	icon_state = "x"
+	invisibility = 101
+	mouse_opacity = 0
+	density = 0
+	anchored = 1
+
+	//Weighted with values (not %chance, but relative weight)
+	//Can be left value-less for all equally likely
+	var/list/mobs_to_pick_from = list(
+		/mob/living/simple_mob/animal/giant_spider/hunter = 3,
+		/mob/living/simple_mob/animal/giant_spider/webslinger = 5,
+		/mob/living/simple_mob/animal/giant_spider/carrier = 5,
+		/mob/living/simple_mob/animal/giant_spider/lurker = 4,
+		/mob/living/simple_mob/animal/giant_spider/tunneler = 5,
+		/mob/living/simple_mob/animal/giant_spider/pepper = 2,
+		/mob/living/simple_mob/animal/giant_spider/thermic = 5,
+		/mob/living/simple_mob/animal/giant_spider/electric = 3,
+		/mob/living/simple_mob/animal/giant_spider/phorogenic = 2,
+		/mob/living/simple_mob/animal/giant_spider/frost = 4,
+		/mob/living/simple_mob/vore/aggressive/rat/phoron = 4
+	)
+	//When the below chance fails, the spawner is marked as depleted and stops spawning
+	var/prob_spawn = 100	//Chance of spawning a mob whenever they don't have one
+	var/prob_fall = 25		//Above decreases by this much each time one spawns
+
+	//Settings to help mappers/coders have their mobs do what they want in this case
+	var/faction	= "spiders"			//To prevent infighting if it spawns various mobs, set a faction
+	var/atmos_comp = TRUE			//TRUE will set all their survivability to be within 20% of the current air
+
+	//Internal use only
+	var/mob/living/simple_mob/my_mob
+	var/depleted = FALSE
+
+/obj/nuclear_mistake_spawner/Initialize()
+	. = ..()
+
+	if(!LAZYLEN(mobs_to_pick_from))
+		log_world("Mob spawner at [x],[y],[z] ([get_area(src)]) had no mobs_to_pick_from set on it!")
+		return INITIALIZE_HINT_QDEL
+	START_PROCESSING(SSobj, src)
+
+/obj/nuclear_mistake_spawner/process()
+	if(my_mob && my_mob.stat != DEAD)
+		return //No need
+
+	if(LAZYLEN(loc.human_mobs(world.view)))
+		return //I'll wait.
+
+	if(prob(prob_spawn))
+		prob_spawn -= prob_fall
+		var/picked_type = pickweight(mobs_to_pick_from)
+		my_mob = new picked_type(get_turf(src))
+		my_mob.low_priority = TRUE
+
+		if(faction)
+			my_mob.faction = faction
+
+		if(atmos_comp)
+			var/turf/T = get_turf(src)
+			var/datum/gas_mixture/env = T.return_air()
+			if(env)
+				my_mob.minbodytemp = env.temperature * 0.8
+				my_mob.maxbodytemp = env.temperature * 1.2
+
+				var/list/gaslist = env.gas
+				my_mob.min_oxy = gaslist[/datum/gas/oxygen] * 0.8
+				my_mob.min_tox = gaslist[/datum/gas/phoron] * 0.8
+				my_mob.min_n2 = gaslist[/datum/gas/nitrogen] * 0.8
+				my_mob.min_co2 = gaslist[/datum/gas/carbon_dioxide] * 0.8
+				my_mob.max_oxy = gaslist[/datum/gas/oxygen] * 1.2
+				my_mob.max_tox = gaslist[/datum/gas/phoron] * 1.2
+				my_mob.max_n2 = gaslist[/datum/gas/nitrogen] * 1.2
+				my_mob.max_co2 = gaslist[/datum/gas/carbon_dioxide] * 1.2
+		return
+	else
+		STOP_PROCESSING(SSobj, src)
+		depleted = TRUE
+		return

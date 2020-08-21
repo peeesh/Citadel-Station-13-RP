@@ -7,7 +7,7 @@
 	show_messages = 1
 
 	sprite_sheets = list(
-		SPECIES_TESHARI = 'icons/mob/species/seromi/head.dmi',
+		SPECIES_TESHARI = 'icons/mob/species/teshari/head.dmi',
 		SPECIES_VOX = 'icons/mob/species/vox/head.dmi'
 		)
 
@@ -112,6 +112,9 @@
 	hitsound = 'sound/effects/slime_squish.ogg'
 	slot_flags = SLOT_HOLSTER
 	origin_tech = list(TECH_BIO = 3)
+
+/obj/item/holder/protoblob
+	slot_flags = SLOT_HEAD | SLOT_OCLOTHING | SLOT_HOLSTER
 
 /obj/item/holder/fish/afterattack(var/atom/target, var/mob/living/user, proximity)
 	if(!target)

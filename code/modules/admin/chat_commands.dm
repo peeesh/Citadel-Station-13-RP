@@ -87,9 +87,9 @@
 GLOBAL_LIST(round_end_notifiees)
 
 /datum/tgs_chat_command/endnotify
-	name = "endnotify"
+	name = "notify"
 	help_text = "Pings the invoker when the round ends"
-	admin_only = TRUE
+	admin_only = FALSE
 
 /datum/tgs_chat_command/endnotify/Run(datum/tgs_chat_user/sender, params)
 	//if(!SSSSticker.IsRoundInProgress() && SSSSticker.HasRoundStarted())
@@ -136,7 +136,8 @@ GLOBAL_LIST(round_end_notifiees)
 	admin_only = TRUE
 
 /datum/tgs_chat_command/whitelist/Run(datum/tgs_chat_user/sender, params)
-	GLOB.PB_bypass |= ckey(params)
+	GLOB.bunker_passthrough |= ckey(params)
+	GLOB.bunker_passthrough[ckey(params)] = world.realtime
 	return "Added [ckey(params)] to the bypass list."
 
 /datum/tgs_chat_command/dewhitelist
@@ -145,5 +146,5 @@ GLOBAL_LIST(round_end_notifiees)
 	admin_only = TRUE
 
 /datum/tgs_chat_command/dewhitelist/Run(datum/tgs_chat_user/sender, params)
-	GLOB.PB_bypass -= ckey(params)
+	GLOB.bunker_passthrough -= ckey(params)
 	return "Removed [ckey(params)] from the bypass list if they were on it."

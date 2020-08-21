@@ -12,9 +12,9 @@
 	idtype = /obj/item/card/id/civilian/chaplain
 	access = list(access_morgue, access_chapel_office, access_crematorium, access_maint_tunnels)
 	minimal_access = list(access_chapel_office, access_crematorium)
-	alt_titles = list("Counselor")
 
 	outfit_type = /decl/hierarchy/outfit/job/chaplain
+	alt_titles = list("Paracausal Scholar", "Religious Affairs Liason")
 
 /datum/job/chaplain/equip(var/mob/living/carbon/human/H, var/alt_title, var/ask_questions = TRUE)
 	. = ..()

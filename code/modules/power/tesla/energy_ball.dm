@@ -66,7 +66,7 @@
 		pixel_x = -32
 		pixel_y = -32
 		for (var/ball in orbiting_balls)
-			var/range = rand(1, CLAMP(orbiting_balls.len, 3, 7))
+			var/range = rand(1, clamp(orbiting_balls.len, 3, 7))
 			tesla_zap(ball, range, TESLA_MINI_POWER/7*range, TRUE)
 	else
 		energy = 0 // ensure we dont have miniballs of miniballs
@@ -274,7 +274,7 @@
 		if(zapdir)
 			. = zapdir
 
-	var/drain_energy = FALSE // VOREStation Edit - Safety First! Drain Tesla fast when its loose
+	var/drain_energy = TRUE // Citadel Station Edit: Reactivates drain for reactor. Keeping VS Edits for legacy knowledge.
 
 	//per type stuff:
 	if(closest_tesla_coil)
@@ -284,7 +284,7 @@
 		closest_grounding_rod.tesla_act(power, explosive, stun_mobs)
 
 	else if(closest_mob)
-		var/shock_damage = CLAMP(round(power/400), 10, 90) + rand(-5, 5)
+		var/shock_damage = clamp(round(power/400), 10, 90) + rand(-5, 5)
 		closest_mob.electrocute_act(shock_damage, source, 1 - closest_mob.get_shock_protection(), ran_zone())
 		log_game("TESLA([source.x],[source.y],[source.z]) Shocked [key_name(closest_mob)] for [shock_damage]dmg.")
 		message_admins("Tesla zapped [key_name_admin(closest_mob)]!")
@@ -312,5 +312,5 @@
 	if(drain_energy && istype(source, /obj/singularity/energy_ball))
 		var/obj/singularity/energy_ball/EB = source
 		if (EB.energy > 0)
-			EB.energy -= min(EB.energy, max(10, round(EB.energy * 0.05)))
+			EB.energy -= min(EB.energy, max(1, round(EB.energy * 0.05))) // Citadel Station Edit: Reduces Drain speed to allow contained balls to lose power too /Vore station has set to 10 causing rapid decay
 	// VOREStation Edit End

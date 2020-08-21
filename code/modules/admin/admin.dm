@@ -192,8 +192,8 @@ proc/admin_notice(var/message, var/rights)
 	// language toggles
 	body += "<br><br><b>Languages:</b><br>"
 	var/f = 1
-	for(var/k in all_languages)
-		var/datum/language/L = all_languages[k]
+	for(var/k in GLOB.all_languages)
+		var/datum/language/L = GLOB.all_languages[k]
 		if(!(L.flags & INNATE))
 			if(!f) body += " | "
 			else f = 0
@@ -369,7 +369,7 @@ proc/admin_notice(var/message, var/rights)
 					if(CHANNEL.is_admin_channel)
 						dat+="<B><FONT style='BACKGROUND-COLOR: LightGreen'><A href='?src=\ref[src];ac_show_channel=\ref[CHANNEL]'>[CHANNEL.channel_name]</A></FONT></B><BR>"
 					else
-						dat+="<B><A href='?src=\ref[src];ac_show_channel=\ref[CHANNEL]'>[CHANNEL.channel_name]</A> [(CHANNEL.censored) ? ("<FONT COLOR='red'>***</FONT>") : ()]<BR></B>"
+						dat+="<B><A href='?src=\ref[src];ac_show_channel=\ref[CHANNEL]'>[CHANNEL.channel_name]</A> [(CHANNEL.censored) ? ("<FONT COLOR='red'>***</FONT>") : null]<BR></B>"
 			dat+={"<BR><HR><A href='?src=\ref[src];ac_refresh=1'>Refresh</A>
 				<BR><A href='?src=\ref[src];ac_setScreen=[0]'>Back</A>
 			"}
@@ -453,7 +453,7 @@ proc/admin_notice(var/message, var/rights)
 				dat+="<I>No feed channels found active...</I><BR>"
 			else
 				for(var/datum/feed_channel/CHANNEL in news_network.network_channels)
-					dat+="<A href='?src=\ref[src];ac_pick_censor_channel=\ref[CHANNEL]'>[CHANNEL.channel_name]</A> [(CHANNEL.censored) ? ("<FONT COLOR='red'>***</FONT>") : ()]<BR>"
+					dat+="<A href='?src=\ref[src];ac_pick_censor_channel=\ref[CHANNEL]'>[CHANNEL.channel_name]</A> [(CHANNEL.censored) ? ("<FONT COLOR='red'>***</FONT>") : null]<BR>"
 			dat+="<BR><A href='?src=\ref[src];ac_setScreen=[0]'>Cancel</A>"
 		if(11)
 			dat+={"
@@ -466,7 +466,7 @@ proc/admin_notice(var/message, var/rights)
 				dat+="<I>No feed channels found active...</I><BR>"
 			else
 				for(var/datum/feed_channel/CHANNEL in news_network.network_channels)
-					dat+="<A href='?src=\ref[src];ac_pick_d_notice=\ref[CHANNEL]'>[CHANNEL.channel_name]</A> [(CHANNEL.censored) ? ("<FONT COLOR='red'>***</FONT>") : ()]<BR>"
+					dat+="<A href='?src=\ref[src];ac_pick_d_notice=\ref[CHANNEL]'>[CHANNEL.channel_name]</A> [(CHANNEL.censored) ? ("<FONT COLOR='red'>***</FONT>") : null]<BR>"
 
 			dat+="<BR><A href='?src=\ref[src];ac_setScreen=[0]'>Back</A>"
 		if(12)
@@ -596,9 +596,7 @@ proc/admin_notice(var/message, var/rights)
 		<A href='?src=\ref[src];quick_create_object=1'>Quick Create Object</A><br>
 		<A href='?src=\ref[src];create_turf=1'>Create Turf</A><br>
 		<A href='?src=\ref[src];create_mob=1'>Create Mob</A><br>
-		<br><A href='?src=\ref[src];vsc=airflow'>Edit Airflow Settings</A><br>
-		<A href='?src=\ref[src];vsc=phoron'>Edit Phoron Settings</A><br>
-		<A href='?src=\ref[src];vsc=default'>Choose a default ZAS setting</A><br>
+		<br><A href='?src=\ref[src];atmos_vsc=1'>Modify Atmospherics Properties</A><br>
 		"}
 
 	usr << browse(dat, "window=admin2;size=210x280")
@@ -1195,7 +1193,7 @@ var/datum/announcement/minor/admin_min_announcer = new
 		out += "<b>Autotraitor <a href='?src=\ref[SSticker.mode];toggle=autotraitor'>disabled</a></b>.<br/>"
 
 	out += "<b>All antag ids:</b>"
-	if(SSticker.mode.antag_templates && SSticker.mode.antag_templates.len).
+	if(SSticker.mode.antag_templates && SSticker.mode.antag_templates.len)
 		for(var/datum/antagonist/antag in SSticker.mode.antag_templates)
 			antag.update_current_antag_max()
 			out += " <a href='?src=\ref[SSticker.mode];debug_antag=[antag.id]'>[antag.id]</a>"
@@ -1504,7 +1502,8 @@ datum/admins/var/obj/item/paper/admin/faxreply // var to hold fax replies in
 		P.stamps += "<hr><i>This paper has been stamped by the [P.origin] Quantum Relay.</i>"
 
 		var/image/stampoverlay = image('icons/obj/bureaucracy.dmi')
-		var/{x; y;}
+		var/x
+		var/y
 		x = rand(-2, 0)
 		y = rand(-1, 2)
 		P.offset_x += x
@@ -1549,3 +1548,19 @@ datum/admins/var/obj/item/paper/admin/faxreply // var to hold fax replies in
 		qdel(P)
 		faxreply = null
 	return
+
+/datum/admins/proc/update_stealth_ghost()
+	if(!isobserver(owner.mob))
+		return
+	var/mob/observer/dead/dead = owner.mob
+	var/stealthghost = owner.is_preference_enabled(/datum/client_preference/holder/stealth_ghost_mode)
+	if(!stealthghost || !fakekey)
+		dead.invisibility = initial(dead.invisibility)
+		dead.alpha = initial(dead.alpha)
+		if(dead.original_name)
+			dead.name = dead.original_name
+	else
+		dead.invisibility = INVISIBILITY_MAXIMUM
+		dead.alpha = 0
+		dead.original_name = dead.name
+		dead.name = "ghost"

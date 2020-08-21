@@ -290,9 +290,9 @@ It's fairly easy to fix if dealing with single letters but not so much with comp
 		var/x
 		for(x=0; x<duration, x++)
 			if(aiEyeFlag)
-				M.client.eye = locate(dd_range(1,oldeye.loc.x+rand(-strength,strength),world.maxx),dd_range(1,oldeye.loc.y+rand(-strength,strength),world.maxy),oldeye.loc.z)
+				M.client.eye = locate(clamp(oldeye.loc.x+rand(-strength,strength), 1, world.maxx), clamp(oldeye.loc.y+rand(-strength,strength), 1, world.maxy), oldeye.loc.z)
 			else
-				M.client.eye = locate(dd_range(1,M.loc.x+rand(-strength,strength),world.maxx),dd_range(1,M.loc.y+rand(-strength,strength),world.maxy),M.loc.z)
+				M.client.eye = locate(clamp(M.loc.x+rand(-strength,strength), 1, world.maxx), clamp(M.loc.y+rand(-strength,strength), 1, world.maxy), M.loc.z)
 			sleep(1)
 		M.client.eye=oldeye
 		M.shakecamera = 0
@@ -409,11 +409,12 @@ proc/is_blind(A)
 				var/mob/observer/dead/DM
 				if(istype(subject, /mob/observer/dead))
 					DM = subject
+				var/anonsay = DM?.is_preference_enabled(/datum/client_preference/anonymous_ghost_chat)
 				if(M.client.holder) 							// What admins see
-					lname = "[keyname][(DM && DM.anonsay) ? "*" : (DM ? "" : "^")] ([name])"
+					lname = "[keyname][(anonsay) ? "*" : (DM ? "" : "^")] ([name])"
 				else
-					if(DM && DM.anonsay)						// If the person is actually observer they have the option to be anonymous
-						lname = "Ghost of [name]"
+					if(anonsay)						// If the person is actually observer they have the option to be anonymous
+						lname = "[name]"
 					else if(DM)									// Non-anons
 						lname = "[keyname] ([name])"
 					else										// Everyone else (dead people who didn't ghost yet, etc.)
@@ -453,6 +454,8 @@ proc/is_blind(A)
 			C = M.original.client
 
 	if(C)
+		if(!isnull(C.holder?.fakekey) || !C.is_preference_enabled(/datum/client_preference/announce_ghost_joinleave))
+			return
 		var/name
 		if(C.mob)
 			var/mob/M = C.mob

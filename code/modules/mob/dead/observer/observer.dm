@@ -29,12 +29,8 @@
 	var/antagHUD = 0
 	universal_speak = 1
 	var/admin_ghosted = 0
-	var/anonsay = 0
 	var/ghostvision = 1 //is the ghost able to see things humans can't?
 	incorporeal_move = 1
-
-	/// Whether or not our mouse opacity is set to transparent while following.
-	var/mouse_opacity_yield_while_following = TRUE
 
 	var/is_manifest = 0 //If set to 1, the ghost is able to whisper. Usually only set if a cultist drags them through the veil.
 	var/ghost_sprite = null
@@ -63,7 +59,9 @@
 		"Chicken" = "chicken_white",
 		"Parrot"= "parrot_fly",
 		"Goose" = "goose",
-		"Penguin" = "penguin",
+		"Penguin" = "penguin_new",
+		"Penguin (Old)" = "penguin",
+		"Penguin (Baby)" = "penguin_baby",
 		"Brown Crab" = "crab",
 		"Gray Crab" = "evilcrab",
 		"Trout" = "trout-swim",
@@ -89,6 +87,9 @@
 		"ED-209" = "ed209",
 		"Beepsky" = "secbot"
 		)
+	var/last_revive_notification = null // world.time of last notification, used to avoid spamming players from defibs or cloners.
+	/// stealthmin vars
+	var/original_name
 
 /mob/observer/dead/New(mob/body)
 	sight |= SEE_TURFS | SEE_MOBS | SEE_OBJS | SEE_SELF
@@ -141,6 +142,9 @@
 		var/mob/target = locate(href_list["track"]) in mob_list
 		if(target)
 			ManualFollow(target)
+	if(href_list["reenter"])
+		reenter_corpse()
+		return
 
 /mob/observer/dead/attackby(obj/item/W, mob/user)
 	if(istype(W,/obj/item/book/tome))
@@ -183,6 +187,7 @@ Works together with spawning an observer, noted above.
 			ghost.client.time_died_as_mouse = ghost.timeofdeath
 		if(ghost.client && !ghost.client.holder && !config_legacy.antag_hud_allowed)		// For new ghosts we remove the verb from even showing up if it's not allowed.
 			ghost.verbs -= /mob/observer/dead/verb/toggle_antagHUD	// Poor guys, don't know what they are missing!
+		ghost.client?.holder?.update_stealth_ghost()
 		return ghost
 
 /*
@@ -310,12 +315,12 @@ This is the proc mobs get to turn into a ghost. Forked from ghostize due to comp
 
 	usr.forceMove(pick(get_area_turfs(A)))
 
-/mob/observer/dead/verb/follow(input in getmobs())
+/mob/observer/dead/verb/follow(input in getmobs_ghost_follow())
 	set category = "Ghost"
 	set name = "Follow" // "Haunt"
 	set desc = "Follow and haunt a mob."
 
-	var/target = getmobs()[input]
+	var/target = getmobs_ghost_follow()[input]
 	if(!target)
 		return
 	ManualFollow(target)
@@ -327,23 +332,13 @@ This is the proc mobs get to turn into a ghost. Forked from ghostize due to comp
 
 	orbit(target, actually_orbit = FALSE)
 
-/mob/observer/dead/start_orbit(datum/component/orbiter/orbits)
-	. = ..()
-	if(mouse_opacity_yield_while_following)
-		mouse_opacity = MOUSE_OPACITY_TRANSPARENT
-
-/mob/observer/dead/stop_orbit(datum/component/orbiter/orbits)
-	. = ..()
-	if(mouse_opacity_yield_while_following)
-		mouse_opacity = initial(mouse_opacity)
-
-/mob/observer/dead/verb/jumptomob(input in getmobs()) //Moves the ghost instead of just changing the ghosts's eye -Nodrak
+/mob/observer/dead/verb/jumptomob(input in getmobs_ghost_follow()) //Moves the ghost instead of just changing the ghosts's eye -Nodrak
 	set category = "Ghost"
 	set name = "Jump to Mob"
 	set desc = "Teleport to a mob"
 	set popup_menu = FALSE //VOREStation Edit - Declutter.
 	if(istype(usr, /mob/observer/dead)) //Make sure they're an observer!
-		var/target = getmobs()[input]
+		var/target = getmobs_ghost_follow()[input]
 		if (!target)//Make sure we actually have a target
 			return
 		else
@@ -400,7 +395,7 @@ This is the proc mobs get to turn into a ghost. Forked from ghostize due to comp
 		to_chat(src, "<font color='red'>Pressure: [round(pressure,0.1)] kPa</font>")
 	if(total_moles)
 		for(var/g in environment.gas)
-			to_chat(src, "<font color='blue'>[gas_data.name[g]]: [round((environment.gas[g] / total_moles) * 100)]% ([round(environment.gas[g], 0.01)] moles)</font>")
+			to_chat(src, "<font color='blue'>[GLOB.meta_gas_names[g]]: [round((environment.gas[g] / total_moles) * 100)]% ([round(environment.gas[g], 0.01)] moles)</font>")
 		to_chat(src, "<font color='blue'>Temperature: [round(environment.temperature-T0C,0.1)]&deg;C ([round(environment.temperature,0.1)]K)</font>")
 		to_chat(src, "<font color='blue'>Heat Capacity: [round(environment.heat_capacity(),0.1)]</font>")
 
@@ -621,8 +616,9 @@ This is the proc mobs get to turn into a ghost. Forked from ghostize due to comp
 	set name = "Toggle Anonymous Chat"
 	set desc = "Toggles showing your key in dead chat."
 
-	src.anonsay = !src.anonsay
-	if(anonsay)
+	client.toggle_preference(/datum/client_preference/anonymous_ghost_chat)
+	SScharacter_setup.queue_preferences_save(client.prefs)
+	if(is_preference_enabled(/datum/client_preference/anonymous_ghost_chat))
 		to_chat(src, "<span class='info'>Your key won't be shown when you speak in dead chat.</span>")
 	else
 		to_chat(src, "<span class='info'>Your key will be publicly visible again.</span>")
@@ -755,3 +751,19 @@ mob/observer/dead/MayRespawn(var/feedback = 0)
 
 /mob/observer/dead/speech_bubble_appearance()
 	return "ghost"
+
+
+// Lets a ghost know someone's trying to bring them back, and for them to get into their body.
+// Mostly the same as TG's sans the hud element, since we don't have TG huds.
+/mob/observer/dead/proc/notify_revive(var/message, var/sound, flashwindow = TRUE)
+	if((last_revive_notification + 2 MINUTES) > world.time)
+		return
+	last_revive_notification = world.time
+
+	if(flashwindow)
+		window_flash(client)
+	if(message)
+		to_chat(src, "<span class='ghostalert'><font size=4>[message]</font></span>")
+	to_chat(src, "<span class='ghostalert'><a href=?src=[REF(src)];reenter=1>(Click to re-enter)</a></span>")
+	if(sound)
+		SEND_SOUND(src, sound(sound))

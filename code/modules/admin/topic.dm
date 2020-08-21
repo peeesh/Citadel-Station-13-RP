@@ -1,7 +1,7 @@
 /datum/admins/Topic(href, href_list)
 	..()
 
-	if(usr.client != src.owner || !check_rights(0))
+	if((usr.client != src.owner) || !check_rights(0))
 		log_admin("[key_name(usr)] tried to use the admin panel without authorization.")
 		message_admins("[usr.key] has attempted to override the admin panel!")
 		return
@@ -290,7 +290,7 @@
 			if("crab")				M.change_mob_type( /mob/living/simple_mob/animal/passive/crab , null, null, delmob )
 			if("coffee")			M.change_mob_type( /mob/living/simple_mob/animal/passive/crab/Coffee , null, null, delmob )
 			if("parrot")			M.change_mob_type( /mob/living/simple_mob/animal/passive/bird/parrot , null, null, delmob )
-			if("polyparrot")		M.change_mob_type( /mob/living/simple_mob/animal/passive/bird/parrot/poly , null, null, delmob )
+			if("pollyparrot")		M.change_mob_type( /mob/living/simple_mob/animal/passive/bird/parrot/polly , null, null, delmob )
 			if("constructarmoured")	M.change_mob_type( /mob/living/simple_mob/construct/juggernaut , null, null, delmob )
 			if("constructbuilder")	M.change_mob_type( /mob/living/simple_mob/construct/artificer , null, null, delmob )
 			if("constructwraith")	M.change_mob_type( /mob/living/simple_mob/construct/wraith , null, null, delmob )
@@ -1299,15 +1299,16 @@
 			to_chat(usr, "<span class='warning'>Unable to locate mob.</span>")
 
 	else if(href_list["adminplayerobservecoodjump"])
-		if(!check_rights(R_ADMIN|R_SERVER|R_MOD|R_EVENT))	return
+		if(!check_rights(R_ADMIN|R_SERVER|R_MOD|R_EVENT))
+			return
 
 		var/x = text2num(href_list["X"])
 		var/y = text2num(href_list["Y"])
 		var/z = text2num(href_list["Z"])
 
 		var/client/C = usr.client
-		if(!isobserver(usr))	C.admin_ghost()
-		sleep(2)
+		if(!isobserver(usr))
+			C.admin_ghost()
 		C.jumptocoord(x,y,z)
 
 	else if(href_list["adminchecklaws"])
@@ -1635,7 +1636,7 @@
 			alert("Removed:\n" + jointext(removed_paths, "\n"))
 
 		var/list/offset = splittext(href_list["offset"],",")
-		var/number = dd_range(1, 100, text2num(href_list["object_count"]))
+		var/number = clamp(text2num(href_list["object_count"]), 1, 100)
 		var/X = offset.len > 0 ? text2num(offset[1]) : 0
 		var/Y = offset.len > 1 ? text2num(offset[2]) : 0
 		var/Z = offset.len > 2 ? text2num(offset[3]) : 0
@@ -1905,15 +1906,6 @@
 		if(check_rights(R_ADMIN|R_SERVER))
 			populate_inactive_customitems_list(src.owner)
 
-	else if(href_list["vsc"])
-		if(check_rights(R_ADMIN|R_SERVER))
-			if(href_list["vsc"] == "airflow")
-				vsc.ChangeSettingsDialog(usr,vsc.settings)
-			if(href_list["vsc"] == "phoron")
-				vsc.ChangeSettingsDialog(usr,vsc.plc.settings)
-			if(href_list["vsc"] == "default")
-				vsc.SetDefault(usr)
-
 	else if(href_list["toglang"])
 		if(check_rights(R_SPAWN|R_EVENT))
 			var/mob/M = locate(href_list["toglang"])
@@ -1921,7 +1913,7 @@
 				to_chat(usr, "[M] is illegal type, must be /mob!")
 				return
 			var/lang2toggle = href_list["lang"]
-			var/datum/language/L = all_languages[lang2toggle]
+			var/datum/language/L = GLOB.all_languages[lang2toggle]
 
 			if(L in M.languages)
 				if(!M.remove_language(lang2toggle))
@@ -1953,6 +1945,9 @@
 			error_viewer.show_to(owner, locate(href_list["viewruntime_backto"]), href_list["viewruntime_linear"])
 		else
 			error_viewer.show_to(owner, null, href_list["viewruntime_linear"])
+
+	else if(href_list["atmos_vsc"])
+		GLOB.atmos_vsc.ui_interact(usr)
 
 	// player info stuff
 

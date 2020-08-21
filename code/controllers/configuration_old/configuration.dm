@@ -164,7 +164,7 @@
 	var/use_loyalty_implants = 0
 
 	var/welder_vision = 1
-	var/generate_map = 0
+	var/generate_map = 1
 	var/no_click_cooldown = 0
 
 	//Used for modifying movement speed for mobs.
@@ -195,8 +195,6 @@
 	var/assistant_maint = 0 //Do assistants get maint access?
 	var/gateway_delay = 18000 //How long the gateway takes before it activates. Default is half an hour.
 	var/ghost_interaction = 0
-
-	var/comms_password = ""
 
 	var/enter_allowed = 1
 
@@ -694,9 +692,6 @@
 
 				if("uneducated_mice")
 					config_legacy.uneducated_mice = 1
-
-				if("comms_password")
-					config_legacy.comms_password = value
 
 				if("irc_bot_host")
 					config_legacy.irc_bot_host = value

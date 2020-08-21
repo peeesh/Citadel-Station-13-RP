@@ -10,7 +10,7 @@
 	interact_offline = 1
 
 	var/on = 0
-	use_power = 1
+	use_power = USE_POWER_IDLE
 	idle_power_usage = 20
 	active_power_usage = 200
 	buckle_lying = FALSE
@@ -234,7 +234,7 @@
 		if(occupant.bodytemperature < T0C)
 			occupant.sleeping = max(5, (1/occupant.bodytemperature)*2000)
 			occupant.Paralyse(max(5, (1/occupant.bodytemperature)*3000))
-			if(air_contents.gas["oxygen"] > 2)
+			if(air_contents.gas[/datum/gas/oxygen] > 2)
 				if(occupant.getOxyLoss()) occupant.adjustOxyLoss(-1)
 			else
 				occupant.adjustOxyLoss(-1)
@@ -288,7 +288,7 @@
 	unbuckle_mob(occupant, force = TRUE)
 	occupant = null
 	current_heat_capacity = initial(current_heat_capacity)
-	update_use_power(1)
+	update_use_power(USE_POWER_IDLE)
 	return
 /obj/machinery/atmospherics/unary/cryo_cell/proc/put_mob(mob/living/carbon/M as mob)
 	if(stat & (NOPOWER|BROKEN))
@@ -321,7 +321,7 @@
 	vis_contents |= occupant
 	occupant.pixel_y += 19
 	current_heat_capacity = HEAT_CAPACITY_HUMAN
-	update_use_power(2)
+	update_use_power(USE_POWER_ACTIVE)
 //	M.metabslow = 1
 	add_fingerprint(usr)
 	update_icon()

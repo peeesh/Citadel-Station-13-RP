@@ -125,13 +125,23 @@
 	return TRUE
 
 /datum/keybinding/mob/ooc
-	hotkey_keys = list("Unbound")
+	hotkey_keys = list("O")
 	name = "ooc"
 	full_name = "OOC"
 	description = "Says something in global OOC"
 
 /datum/keybinding/mob/ooc/down(client/user)
 	user.ooc_wrapper()
+	return TRUE
+
+/datum/keybinding/mob/looc
+	hotkey_keys = list("L")
+	name = "looc"
+	full_name = "LOOC"
+	description = "Says something in local OOC"
+
+/datum/keybinding/mob/looc/down(client/user)
+	user.looc_wrapper()
 	return TRUE
 
 /datum/keybinding/mob/whisper

@@ -67,7 +67,16 @@
 
 	//Logs all hrefs, except chat pings
 	if(!(href_list["_src_"] == "chat" && href_list["proc"] == "ping" && LAZYLEN(href_list) == 2))
-		log_href("[src] (usr:[usr]\[[COORD(usr)]\]) : [hsrc ? "[hsrc] " : ""][href]")
+		var/hsrc_logline
+		var/atom/maybe = hsrc
+		if(istype(hsrc, /datum/nanoui))
+			var/datum/nanoui/N = hsrc
+			maybe = N.src_object
+		if(istype(maybe))
+			hsrc_logline = "[maybe] ([AREACOORD(maybe)])"
+		else
+			hsrc_logline = "[hsrc]"
+		log_href("[src] (usr:[usr? "[usr]\[[AREACOORD(usr)]\]" : "WARNING: NULL USER"]) : [hsrc_logline] : [href]")
 
 	//Admin PM
 	if(href_list["priv_msg"])
@@ -85,7 +94,7 @@
 		if(mute_irc)
 			to_chat(usr, "<span class='warning'You cannot use this as your client has been muted from sending messages to the admins on IRC</span>")
 			return
-		send2adminirc(href_list["irc_msg"])
+		send2irc("AHELP", href_list["irc_msg"])
 		return
 
 	switch(href_list["_src_"])

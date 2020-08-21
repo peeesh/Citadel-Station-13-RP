@@ -9,7 +9,7 @@
 
 	anchored = 1
 	density = 1
-	use_power = 1
+	use_power = USE_POWER_IDLE
 	idle_power_usage = 40
 	active_power_usage = 300
 
@@ -161,7 +161,7 @@
 
 	container.reagents.remove_reagent("biomass", products[choice][2])
 
-	use_power = 2
+	use_power = USE_POWER_ACTIVE
 	printing = 1
 	update_icon()
 
@@ -169,7 +169,7 @@
 
 	sleep(print_delay)
 
-	use_power = 1
+	use_power = USE_POWER_IDLE
 	printing = 0
 	update_icon()
 
@@ -236,9 +236,9 @@
 		malfunctioned = TRUE
 		var/possible_species = list(SPECIES_HUMAN, SPECIES_VOX, SPECIES_SKRELL, SPECIES_ZADDAT, SPECIES_UNATHI, SPECIES_GOLEM, SPECIES_SHADOW)
 		var/new_species = pick(possible_species)
-		if(!all_species[new_species])
+		if(!GLOB.all_species[new_species])
 			new_species = SPECIES_HUMAN
-		O.species = all_species[new_species]
+		O.species = GLOB.all_species[new_species]
 
 	if(istype(O, /obj/item/organ/external) && !malfunctioned)
 		var/obj/item/organ/external/E = O

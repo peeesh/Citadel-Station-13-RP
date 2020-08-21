@@ -85,7 +85,7 @@
 		/obj/item/clothing/head/beret,
 		/obj/item/reagent_containers/food/drinks/bottle/bottleofnothing,
 		/obj/item/clothing/shoes/black,
-		/*/obj/item/toy/crayon/mime*/) //Need to track down the code for crayons before adding this back in
+		/obj/item/toy/crayon/mime) //Need to track down the code for crayons before adding this back in
 
 //joanrisu:Joan Risu
 /obj/item/storage/backpack/dufflebag/sec/fluff/joanrisu
@@ -292,6 +292,10 @@ Swimsuits, for general use, to avoid arriving to work with your swimsuit.
 /obj/item/storage/box/fluff/swimsuit/medical
 	name = "Medical Swimsuit capsule"
 	has_items = list(/obj/item/clothing/under/swimsuit/fluff/medical)
+
+/obj/item/storage/box/fluff/swimsuit/cowbikini
+	name = "Cow Bikini capsule"
+	has_items = list(/obj/item/clothing/under/swimsuit/stripper/cowbikini)
 
 //Monkey boxes for the new primals we have
 /obj/item/storage/box/monkeycubes/sobakacubes

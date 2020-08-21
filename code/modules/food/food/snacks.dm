@@ -387,7 +387,7 @@
 	nutriment_amt = 5
 	nutriment_desc = list("sugar" = 3, "protein" = 2)
 	slot_flags = SLOT_MASK
-	sprite_sheets = list(SPECIES_TESHARI = 'icons/mob/species/seromi/masks_vr.dmi', SPECIES_VOX = 'icons/mob/species/vox/masks.dmi', SPECIES_TAJ = 'icons/mob/species/tajaran/mask_vr.dmi', SPECIES_UNATHI = 'icons/mob/species/unathi/mask_vr.dmi', SPECIES_SERGAL = 'icons/mob/species/sergal/mask_vr.dmi', SPECIES_NEVREAN = 'icons/mob/species/nevrean/mask_vr.dmi', SPECIES_ZORREN_HIGH = 'icons/mob/species/fox/mask_vr.dmi', SPECIES_ZORREN_FLAT = 'icons/mob/species/fennec/mask_vr.dmi', SPECIES_AKULA = 'icons/mob/species/akula/mask_vr.dmi', SPECIES_VULPKANIN = 'icons/mob/species/vulpkanin/mask.dmi', SPECIES_XENOCHIMERA = 'icons/mob/species/tajaran/mask_vr.dmi')
+	sprite_sheets = list(SPECIES_TESHARI = 'icons/mob/species/teshari/masks_vr.dmi', SPECIES_VOX = 'icons/mob/species/vox/masks.dmi', SPECIES_TAJ = 'icons/mob/species/tajaran/mask_vr.dmi', SPECIES_UNATHI = 'icons/mob/species/unathi/mask_vr.dmi', SPECIES_SERGAL = 'icons/mob/species/sergal/mask_vr.dmi', SPECIES_NEVREAN = 'icons/mob/species/nevrean/mask_vr.dmi', SPECIES_ZORREN_HIGH = 'icons/mob/species/fox/mask_vr.dmi', SPECIES_ZORREN_FLAT = 'icons/mob/species/fennec/mask_vr.dmi', SPECIES_AKULA = 'icons/mob/species/akula/mask_vr.dmi', SPECIES_VULPKANIN = 'icons/mob/species/vulpkanin/mask.dmi', SPECIES_XENOCHIMERA = 'icons/mob/species/tajaran/mask_vr.dmi')
 
 /obj/item/reagent_containers/food/snacks/dtreat/Initialize()
 	. = ..()
@@ -3432,7 +3432,7 @@ END CITADEL CHANGE */
 
 /obj/item/reagent_containers/food/snacks/liquidvitamin/Initialize()
 	..()
-	reagents.add_reagent("flour", 20)
+	reagents.add_reagent("nutriflour", 20)
 	reagents.add_reagent("tricordrazine", 5)
 	reagents.add_reagent("paracetamol", 5)
 	reagents.add_reagent("enzyme", 1)
@@ -4684,14 +4684,14 @@ END CITADEL CHANGE */
 		item.reagents.trans_to_holder(returningitem.reagents, item.reagents.total_volume) //Old chip to new chip
 		if(item.icon_state == "chip_half")
 			returningitem.icon_state = "[returningitem.icon_state]_half"
-			returningitem.bitesize = CLAMP(returningitem.reagents.total_volume,1,10)
+			returningitem.bitesize = clamp(returningitem.reagents.total_volume,1,10)
 		else if(prob(1))
 			memed = 1
 			to_chat(user, "You scoop up some dip with the chip, but mid-scoop, the chip breaks off into the dreadful abyss of dip, never to be seen again...")
 			returningitem.icon_state = "[returningitem.icon_state]_half"
-			returningitem.bitesize = CLAMP(returningitem.reagents.total_volume,1,10)
+			returningitem.bitesize = clamp(returningitem.reagents.total_volume,1,10)
 		else
-			returningitem.bitesize = CLAMP(returningitem.reagents.total_volume*0.5,1,10)
+			returningitem.bitesize = clamp(returningitem.reagents.total_volume*0.5,1,10)
 		qdel(item)
 		reagents.trans_to_holder(returningitem.reagents, bitesize) //Dip to new chip
 		user.put_in_hands(returningitem)
@@ -5458,3 +5458,113 @@ END CITADEL CHANGE */
 	reagents.trans_to(O, reagents.total_volume)
 	user.drop_from_inventory(src)
 	qdel(src)
+
+/obj/item/reagent_containers/food/snacks/baschbeans
+	name = "Basch's Baked Beans"
+	icon_state = "baschbeans"
+	desc = "In partnership with the Cyan Consumables Corporation, Basch is proud to produce its classic beans in a brand new package. A frontier favorite!"
+	trash = /obj/item/trash/baschbeans
+	filling_color = "#FC6F28"
+	nutriment_amt = 4
+	nutriment_desc = list("beans" = 4)
+
+/obj/item/reagent_containers/food/snacks/baschbeans/Initialize()
+	. = ..()
+	bitesize = 2
+
+/obj/item/reagent_containers/food/snacks/creamcorn
+	name = "Garm n' Bozia's Cream Corn"
+	icon_state = "creamcorn"
+	desc = "This is a formica label. Green is its color. The Cyan Consumables Corporation refuses to reveal where these cans come from."
+	trash = /obj/item/trash/creamcorn
+	filling_color = "#FFFAD4"
+	nutriment_amt = 5
+	nutriment_desc = list("corn" = 5)
+
+/obj/item/reagent_containers/food/snacks/creamcorn/Initialize()
+	. = ..()
+	bitesize = 2
+
+/obj/item/reagent_containers/food/snacks/crayonburger_red // Buff 6 >> 15
+	name = "red crayonburger"
+	desc = "Someone has melted a whole crayon over the top of this patty!"
+	icon_state = "crayonburg_red"
+	nutriment_amt = 7
+	nutriment_desc = list("bun" = 2, "wax" = 2, "meat" = 1)
+
+/obj/item/reagent_containers/food/snacks/crayonburger_red/Initialize()
+	. = ..()
+	reagents.add_reagent("protein", 8)
+	bitesize = 3
+
+/obj/item/reagent_containers/food/snacks/crayonburger_org // Buff 6 >> 15
+	name = "orange crayonburger"
+	desc = "Someone has melted a whole crayon over the top of this patty!"
+	icon_state = "crayonburg_org"
+	nutriment_amt = 7
+	nutriment_desc = list("bun" = 2, "wax" = 2, "meat" = 1)
+
+/obj/item/reagent_containers/food/snacks/crayonburger_org/Initialize()
+	. = ..()
+	reagents.add_reagent("protein", 8)
+	bitesize = 3
+
+/obj/item/reagent_containers/food/snacks/crayonburger_yel // Buff 6 >> 15
+	name = "yellow crayonburger"
+	desc = "Someone has melted a whole crayon over the top of this patty!"
+	icon_state = "crayonburg_yel"
+	nutriment_amt = 7
+	nutriment_desc = list("bun" = 2, "wax" = 2, "meat" = 1)
+
+/obj/item/reagent_containers/food/snacks/crayonburger_yel/Initialize()
+	. = ..()
+	reagents.add_reagent("protein", 8)
+	bitesize = 3
+
+/obj/item/reagent_containers/food/snacks/crayonburger_grn // Buff 6 >> 15
+	name = "green crayonburger"
+	desc = "Someone has melted a whole crayon over the top of this patty!"
+	icon_state = "crayonburg_grn"
+	nutriment_amt = 7
+	nutriment_desc = list("bun" = 2, "wax" = 2, "meat" = 1)
+
+/obj/item/reagent_containers/food/snacks/crayonburger_grn/Initialize()
+	. = ..()
+	reagents.add_reagent("protein", 8)
+	bitesize = 3
+
+/obj/item/reagent_containers/food/snacks/crayonburger_blu // Buff 6 >> 15
+	name = "blue crayonburger"
+	desc = "Someone has melted a whole crayon over the top of this patty!"
+	icon_state = "crayonburg_blu"
+	nutriment_amt = 7
+	nutriment_desc = list("bun" = 2, "wax" = 2, "meat" = 1)
+
+/obj/item/reagent_containers/food/snacks/crayonburger_blu/Initialize()
+	. = ..()
+	reagents.add_reagent("protein", 8)
+	bitesize = 3
+
+/obj/item/reagent_containers/food/snacks/crayonburger_prp // Buff 6 >> 15
+	name = "purple crayonburger"
+	desc = "Someone has melted a whole crayon over the top of this patty!"
+	icon_state = "crayonburg_prp"
+	nutriment_amt = 7
+	nutriment_desc = list("bun" = 2, "wax" = 2, "meat" = 1)
+
+/obj/item/reagent_containers/food/snacks/crayonburger_prp/Initialize()
+	. = ..()
+	reagents.add_reagent("protein", 8)
+	bitesize = 3
+
+/obj/item/reagent_containers/food/snacks/crayonburger_rbw // Buff 6 >> 15
+	name = "rainbow crayonburger"
+	desc = "Someone has melted a whole crayon over the top of this patty! This one seems especially rare!"
+	icon_state = "crayonburg_rbw"
+	nutriment_amt = 7
+	nutriment_desc = list("bun" = 2, "wax" = 2, "meat" = 1, "color" = 1)
+
+/obj/item/reagent_containers/food/snacks/crayonburger_rbw/Initialize()
+	. = ..()
+	reagents.add_reagent("protein", 12)
+	bitesize = 3

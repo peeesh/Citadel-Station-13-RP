@@ -8,7 +8,7 @@ var/list/global/tank_gauge_cache = list()
 	name = "tank"
 	icon = 'icons/obj/tank.dmi'
 	sprite_sheets = list(
-		SPECIES_TESHARI = 'icons/mob/species/seromi/back.dmi'
+		SPECIES_TESHARI = 'icons/mob/species/teshari/back.dmi'
 		)
 
 	var/gauge_icon = "indicator_tank"
@@ -58,15 +58,14 @@ var/list/global/tank_gauge_cache = list()
 
 
 /obj/item/tank/Initialize()
-	..()
+	. = ..()
+	START_PROCESSING(SSobj, src)
 
 	src.init_proxy()
 	src.air_contents = new /datum/gas_mixture()
 	src.air_contents.volume = volume //liters
 	src.air_contents.temperature = T20C
-	START_PROCESSING(SSobj, src)
 	update_gauge()
-	return
 
 /obj/item/tank/Destroy()
 	QDEL_NULL(air_contents)
@@ -502,7 +501,7 @@ var/list/global/tank_gauge_cache = list()
 
 			var/release_ratio = 0.002
 			if(tank_pressure)
-				release_ratio = CLAMP(0.002, sqrt(max(tank_pressure-env_pressure,0)/tank_pressure),1)
+				release_ratio = clamp(0.002, sqrt(max(tank_pressure-env_pressure,0)/tank_pressure),1)
 
 			var/datum/gas_mixture/leaked_gas = air_contents.remove_ratio(release_ratio)
 			//dynamic air release based on ambient pressure
@@ -555,8 +554,8 @@ var/list/global/tank_gauge_cache = list()
 		oxygen_amt = 4.5
 
 
-	src.air_contents.gas["phoron"] = phoron_amt
-	src.air_contents.gas["oxygen"] = oxygen_amt
+	src.air_contents.gas[/datum/gas/phoron] = phoron_amt
+	src.air_contents.gas[/datum/gas/oxygen] = oxygen_amt
 	src.air_contents.update_values()
 	src.valve_welded = 1
 	src.air_contents.temperature = PHORON_MINIMUM_BURN_TEMPERATURE-1

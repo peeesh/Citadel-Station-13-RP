@@ -101,7 +101,7 @@ Class Procs:
 
 	var/stat = 0
 	var/emagged = 0
-	var/use_power = 1
+	var/use_power = USE_POWER_IDLE
 		//0 = dont run the auto
 		//1 = run auto, use idle
 		//2 = run auto, use active
@@ -130,6 +130,7 @@ Class Procs:
 		START_MACHINE_PROCESSING(src)
 	else
 		START_PROCESSING(SSfastprocess, src)
+	power_change()
 
 /obj/machinery/Destroy()
 	if(!speed_process)
@@ -197,9 +198,9 @@ Class Procs:
 /obj/machinery/proc/auto_use_power()
 	if(!powered(power_channel))
 		return 0
-	if(use_power == 1)
+	if(use_power == USE_POWER_IDLE)
 		use_power(idle_power_usage, power_channel, 1)
-	else if(use_power >= 2)
+	else if(use_power >= USE_POWER_ACTIVE)
 		use_power(active_power_usage, power_channel, 1)
 	return 1
 
@@ -328,7 +329,7 @@ Class Procs:
 			RefreshParts()
 	else
 		to_chat(user, "<span class='notice'>Following parts detected in the machine:</span>")
-		for(var/var/obj/item/C in component_parts) //var/var/obj/item/C?
+		for(var/obj/item/C in component_parts)
 			to_chat(user, "<span class='notice'>    [C.name]</span>")
 	return 1
 

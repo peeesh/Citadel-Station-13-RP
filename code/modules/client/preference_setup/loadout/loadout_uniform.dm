@@ -295,9 +295,9 @@
 	path = /obj/item/clothing/under/dress/dress_fire
 
 /datum/gear/uniform/uniform_captain
-	display_name = "uniform, colony director's dress"
+	display_name = "uniform, Facility Director's dress"
 	path = /obj/item/clothing/under/dress/dress_cap
-	allowed_roles = list("Colony Director")
+	allowed_roles = list("Facility Director")
 
 /datum/gear/uniform/corpdetsuit
 	display_name = "uniform, corporate (Detective)"
@@ -345,19 +345,23 @@
 	path = /obj/item/clothing/under/rank/head_of_security/navyblue
 	allowed_roles = list("Head of Security")
 
-/datum/gear/uniform/shortplaindress
-	display_name = "plain dress"
-	path = /obj/item/clothing/under/dress/white3
-
-/datum/gear/uniform/shortplaindress/New()
-	..()
-	gear_tweaks = list(gear_tweak_free_color_choice)
+/datum/gear/uniform/whitedress
+	display_name = "white wedding dress"
+	path = /obj/item/clothing/under/dress/white
 
 /datum/gear/uniform/longdress
 	display_name = "long dress"
 	path = /obj/item/clothing/under/dress/white2
 
 /datum/gear/uniform/longdress/New()
+	..()
+	gear_tweaks = list(gear_tweak_free_color_choice)
+
+/datum/gear/uniform/shortplaindress
+	display_name = "plain dress"
+	path = /obj/item/clothing/under/dress/white3
+
+/datum/gear/uniform/shortplaindress/New()
 	..()
 	gear_tweaks = list(gear_tweak_free_color_choice)
 
@@ -372,10 +376,28 @@
 /datum/gear/uniform/reddress
 	display_name = "red dress with belt"
 	path = /obj/item/clothing/under/dress/darkred
-
+/*
 /datum/gear/uniform/whitewedding
 	display_name= "white wedding dress"
 	path = /obj/item/clothing/under/wedding/bride_white
+*/
+
+/datum/gear/uniform/wedding
+	display_name = "Wedding Dress selection"
+	path = /obj/item/clothing/under/wedding
+
+/datum/gear/uniform/wedding/New()
+	..()
+	var/list/weddings = list()
+	for(var/wedding in typesof(/obj/item/clothing/under/wedding))
+		var/obj/item/clothing/under/wedding/wedding_type = wedding
+		weddings[initial(wedding_type.name)] = wedding_type
+	gear_tweaks += new/datum/gear_tweak/path(sortTim(weddings, /proc/cmp_text_asc, TRUE))
+
+
+/datum/gear/uniform/suit/reallyblack
+	display_name = "executive suit"
+	path = /obj/item/clothing/under/suit_jacket/really_black
 
 /datum/gear/uniform/skirts
 	display_name = "executive skirt"
@@ -518,7 +540,7 @@
 /datum/gear/uniform/sifguard/command
 	display_name = "uniform, crew (command)"
 	path = /obj/item/clothing/under/solgov/utility/sifguard/officer/crew
-	allowed_roles = list("Head of Security","Colony Director","Head of Personnel","Chief Engineer","Research Director","Chief Medical Officer")
+	allowed_roles = list("Head of Security","Facility Director","Head of Personnel","Chief Engineer","Research Director","Chief Medical Officer")
 
 /datum/gear/uniform/fleet/medical
 	display_name = "uniform, coveralls (medical)"
@@ -551,7 +573,7 @@
 /datum/gear/uniform/fleet/command
 	display_name = "uniform, coveralls (command)"
 	path = /obj/item/clothing/under/solgov/utility/fleet/command
-	allowed_roles = list("Head of Security","Colony Director","Head of Personnel","Chief Engineer","Research Director","Chief Medical Officer")
+	allowed_roles = list("Head of Security","Facility Director","Head of Personnel","Chief Engineer","Research Director","Chief Medical Officer")
 
 /datum/gear/uniform/marine/medical
 	display_name = "uniform, fatigues (medical)"
@@ -584,7 +606,7 @@
 /datum/gear/uniform/marine/command
 	display_name = "uniform, fatigues (command)"
 	path = /obj/item/clothing/under/solgov/utility/marine/command
-	allowed_roles = list("Head of Security","Colony Director","Head of Personnel","Chief Engineer","Research Director","Chief Medical Officer")
+	allowed_roles = list("Head of Security","Facility Director","Head of Personnel","Chief Engineer","Research Director","Chief Medical Officer")
 
 /datum/gear/uniform/marine/green
 	display_name = "uniform, fatigues (green)"
@@ -712,3 +734,77 @@ datum/gear/uniform/fiendsuit
 datum/gear/uniform/fienddress
 	display_name = "Fiendish Dress"
 	path = /obj/item/clothing/under/fienddress
+
+datum/gear/uniform/leotard
+	display_name = "Black leotard"
+	path = /obj/item/clothing/under/leotard
+
+datum/gear/uniform/leotardcolor
+	display_name = "Colored leotard"
+	path = /obj/item/clothing/under/leotardcolor
+
+/datum/gear/uniform/leotardcolor/New()
+	..()
+	gear_tweaks = list(gear_tweak_free_color_choice)
+
+datum/gear/uniform/verglasdress
+	display_name = "Verglas dress"
+	path = /obj/item/clothing/under/verglasdress
+
+datum/gear/uniform/fashionminiskirt
+	display_name = "Fashionable miniskirt"
+	path = /obj/item/clothing/under/fashionminiskirt
+
+/datum/gear/uniform/fashionminiskirt/New()
+	..()
+	gear_tweaks = list(gear_tweak_free_color_choice)
+
+datum/gear/uniform/bodysuiteva
+	display_name = "EVA Bodysuit"
+	path = /obj/item/clothing/under/bodysuit/bodysuiteva
+
+datum/gear/uniform/bodysuitemt
+	display_name = "EMT Bodysuit"
+	path = /obj/item/clothing/under/bodysuit/bodysuitemt
+	allowed_roles = list("Medical Doctor","Chief Medical Officer","Chemist","Search and Rescue","Paramedic","Geneticist", "Psychiatrist")
+
+
+datum/gear/uniform/bodysuitexplocom
+	display_name = "Exploration Command Bodysuit"
+	path = /obj/item/clothing/under/bodysuit/bodysuitexplocom
+	allowed_roles = list("Research Director","Pathfinder")
+
+datum/gear/uniform/bodysuitexplo
+	display_name = "Exploration Bodysuit"
+	path = /obj/item/clothing/under/bodysuit/bodysuitexplo
+	allowed_roles = list("Reasearch Director","Pathfinder","Scientist","Roboticist","Xenobiologist")
+
+datum/gear/uniform/bodysuitminer
+	display_name = "Mining Bodysuit"
+	path = /obj/item/clothing/under/bodysuit/bodysuitminer
+	allowed_roles = list("Cargo Technician","Shaft Miner")
+
+datum/gear/uniform/bodysuithazard
+	display_name = "Hazard Bodysuit"
+	path = /obj/item/clothing/under/bodysuit/bodysuithazard
+	allowed_roles = list("Chief Engineer","Atmospheric Technician","Station Engineer","Shaft Miner")
+
+datum/gear/uniform/bodysuitsec
+	display_name = "Security Bodysuit"
+	path = /obj/item/clothing/under/bodysuit/bodysuitsec
+	allowed_roles = list("Security Officer","Head of Security","Warden","Detective")
+
+datum/gear/uniform/bodysuitsecmed
+	display_name = "Security Medic Bodysuit"
+	path = /obj/item/clothing/under/bodysuit/bodysuitsecmed
+	allowed_roles = list("Security Officer","Head of Security","Medical Doctor")
+
+datum/gear/uniform/bodysuitseccom
+	display_name = "Security Command Bodysuit"
+	path = /obj/item/clothing/under/bodysuit/bodysuitseccom
+	allowed_roles = list("Head of Security","Warden")
+
+datum/gear/uniform/bodysuitcommand
+	display_name = "Command Bodysuit"
+	path = /obj/item/clothing/under/bodysuit/bodysuitcommand
+	allowed_roles = list("Head of Security","Facility Director","Head of Personnel","Chief Engineer","Research Director","Chief Medical Officer")

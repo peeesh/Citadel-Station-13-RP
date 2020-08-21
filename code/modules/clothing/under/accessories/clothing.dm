@@ -59,7 +59,7 @@
 	slot = ACCESSORY_SLOT_OVER
 
 	sprite_sheets = list(
-		"Teshari" = 'icons/mob/species/seromi/suit.dmi'
+		"Teshari" = 'icons/mob/species/teshari/suit.dmi'
 		)
 
 /obj/item/clothing/accessory/poncho/equipped() //Solution for race-specific sprites for an accessory which is also a suit. Suit icons break if you don't use icon override which then also overrides race-specific sprites.
@@ -67,7 +67,7 @@
 	var/mob/living/carbon/human/H = loc
 	if(istype(H) && H.wear_suit == src)
 		if(H.species.name == "Teshari")
-			icon_override = 'icons/mob/species/seromi/suit.dmi'
+			icon_override = 'icons/mob/species/teshari/suit.dmi'
 		else if(H.species.name == "Vox")
 			icon_override = 'icons/mob/species/vox/ties.dmi'
 		else
@@ -175,8 +175,8 @@
 	item_state = "hoscloak"
 
 /obj/item/clothing/accessory/poncho/roles/cloak/captain
-	name = "colony director's cloak"
-	desc = "An elaborate cloak meant to be worn by the colony director."
+	name = "Facility Director's cloak"
+	desc = "An elaborate cloak meant to be worn by the Facility Director."
 	icon_state = "capcloak"
 	item_state = "capcloak"
 

@@ -235,7 +235,7 @@
 	if(hud_data.has_internals)
 		mymob.internals = new /obj/screen()
 		mymob.internals.icon = ui_style
-		mymob.internals.icon_state = "internal0"
+		mymob.internals.icon_state = "internal[target?.internal? 1 : 0]"
 		mymob.internals.name = "internal"
 		mymob.internals.screen_loc = ui_internal
 		hud_elements |= mymob.internals
@@ -303,6 +303,11 @@
 	mymob.shadekin_energy_display.screen_loc = ui_shadekin_energy_display
 	mymob.shadekin_energy_display.icon_state = "energy0"
 	hud_elements |= mymob.shadekin_energy_display
+
+	mymob.xenochimera_danger_display = new /obj/screen/xenochimera/danger_level()
+	mymob.xenochimera_danger_display.screen_loc = ui_xenochimera_danger_display
+	mymob.xenochimera_danger_display.icon_state = "danger00"
+	hud_elements |= mymob.xenochimera_danger_display
 	//VOREStation Addition end
 
 	mymob.ling_chem_display = new /obj/screen/ling/chems()

@@ -108,7 +108,7 @@
 /datum/gear/eyes/sun
 	display_name = "Sunglasses (Security/Command)"
 	path = /obj/item/clothing/glasses/sunglasses
-	allowed_roles = list("Security Officer","Head of Security","Warden","Colony Director","Head of Personnel","Quartermaster","Internal Affairs Agent","Detective")
+	allowed_roles = list("Security Officer","Head of Security","Warden","Facility Director","Head of Personnel","Quartermaster","Internal Affairs Agent","Detective")
 
 /datum/gear/eyes/sun/shades
 	display_name = "Sunglasses, fat (Security/Command)"
@@ -142,6 +142,31 @@
 	display_name = "Glasses, prescription thin frame"
 	path = /obj/item/clothing/glasses/regular/thin
 
+// July 2020 Werewolf additions
+/datum/gear/eyes/glasses/thick
+	display_name = "Glasses, thick lenses"
+	path = /obj/item/clothing/glasses/thick
+
+/datum/gear/eyes/glasses/prescriptionthick
+	display_name = "Glasses, prescription thick lenses"
+	path = /obj/item/clothing/glasses/regular/thick
+
+/datum/gear/eyes/glasses/dark
+	display_name = "Glasses, dark frame"
+	path = /obj/item/clothing/glasses/dark
+
+/datum/gear/eyes/glasses/prescriptiondark
+	display_name = "Glasses, prescription dark frame"
+	path = /obj/item/clothing/glasses/regular/dark
+
+/datum/gear/eyes/glasses/scan
+	display_name = "Glasses, scanner"
+	path = /obj/item/clothing/glasses/scan
+
+/datum/gear/eyes/glasses/prescriptionscan
+	display_name = "Glasses, prescription scanner"
+	path = /obj/item/clothing/glasses/regular/scan
+
 // April 2020 Drof's Additions Begin Below
 /datum/gear/eyes/jamjar
 	display_name = "jamjar glasses"
@@ -153,7 +178,7 @@
 
 /datum/gear/eyes/whiteblindfold
 	display_name = "white blindfold"
-	path = /obj/item/clothing/glasses/sunglasses/whiteblindfold
+	path = /obj/item/clothing/glasses/sunglasses/blindfold/whiteblindfold
 
 /datum/gear/eyes/redglasses
 	display_name = "red glasses"
@@ -176,3 +201,7 @@
 	display_name = "Optical Meson Eyepatch (Engineering, Science, Mining)"
 	path = /obj/item/clothing/glasses/hud/health/eyepatch
 	allowed_roles = list("Station Engineer","Chief Engineer","Atmospheric Technician", "Scientist", "Research Director", "Shaft Miner")
+
+/datum/gear/eyes/glasses/welding
+	display_name = "Welding Goggles"
+	path = /obj/item/clothing/glasses/welding

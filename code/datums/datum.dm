@@ -70,7 +70,7 @@
   * Returns QDEL_HINT_QUEUE
   */
 /datum/proc/Destroy(force=FALSE, ...)
-	SHOULD_CALL_PARENT(1)
+	SHOULD_CALL_PARENT(TRUE)
 	tag = null
 	datum_flags &= ~DF_USE_TAG //In case something tries to REF us
 	weak_reference = null	//ensure prompt GCing of weakref.
@@ -148,13 +148,24 @@
 	to_chat(target, txt_changed_vars())
 #endif
 
-///Return a LIST for serialize_datum to encode! Not the actual json!
+/**
+  * Saves our data into a data list.
+  *
+  * @params
+  * * options - associative list of options to use. Not yet particularly used/standardized, but can be easily implemented.
+  */
 /datum/proc/serialize_list(list/options)
-	CRASH("Attempted to serialize datum [src] of type [type] without serialize_list being implemented!")
+	return list()
 
-///Accepts a LIST from deserialize_datum. Should return src or another datum.
-/datum/proc/deserialize_list(json, list/options)
-	CRASH("Attempted to deserialize datum [src] of type [type] without deserialize_list being implemented!")
+/**
+  * Takes a data list in and loads data into ourselves. Persistence elements currently use this.
+  *
+  * @params
+  * * data - list of data for us to use
+  * * options - associatve list of options to use. Not yet particularly used/standardized, but can be easily implemented.
+  */
+/datum/proc/deserialize_list(list/data, list/options)
+	return list()
 
 ///Serializes into JSON. Does not encode type.
 /datum/proc/serialize_json(list/options)

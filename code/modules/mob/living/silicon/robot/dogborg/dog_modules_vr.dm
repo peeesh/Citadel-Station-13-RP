@@ -81,7 +81,7 @@
 		to_chat(user, "<span class='warning'>Pressure: [round(pressure,0.1)] kPa</span>")
 	if(total_moles)
 		for(var/g in environment.gas)
-			to_chat(user, "<span class='notice'>[gas_data.name[g]]: [round((environment.gas[g] / total_moles) * 100)]%</span>")
+			to_chat(user, "<span class='notice'>[GLOB.meta_gas_names[g]]: [round((environment.gas[g] / total_moles) * 100)]%</span>")
 		to_chat(user, "<span class='notice'>Temperature: [round(environment.temperature-T0C,0.1)]&deg;C ([round(environment.temperature,0.1)]K)</span>")
 
 /obj/item/dogborg/boop_module/afterattack(obj/O, mob/user as mob, proximity)
@@ -212,7 +212,7 @@
 	if(istype(target, /obj/structure/sink) || istype(target, /obj/structure/toilet)) //Dog vibes.
 		user.visible_message("[user] begins to lap up water from [target.name].", "<span class='notice'>You begin to lap up water from [target.name].</span>")
 		if(do_after (user, 50))
-			water.add_charge(50)
+			water.add_charge(500)
 	else if(water.energy < 5)
 		to_chat(user, "<span class='notice'>Your mouth feels dry. You should drink some water.</span>") //fixed annoying grammar and needless space
 		return

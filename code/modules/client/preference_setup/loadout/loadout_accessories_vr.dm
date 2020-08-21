@@ -1,5 +1,15 @@
 // Collars
 
+/datum/gear/choker //A colorable choker
+	display_name = "choker (colorable, tagless)"
+	path = /obj/item/clothing/accessory/choker
+	slot = slot_tie
+	sort_category = "Accessories"
+
+/datum/gear/choker/New()
+	..()
+	gear_tweaks = list(gear_tweak_free_color_choice)
+
 /datum/gear/collar
 	display_name = "collar, silver"
 	path = /obj/item/clothing/accessory/collar/silver
@@ -33,6 +43,10 @@
 /datum/gear/collar/holo
 	display_name = "collar, holo"
 	path = /obj/item/clothing/accessory/collar/holo
+
+/datum/gear/collar/cow
+	display_name = "collar, cowbell"
+	path = /obj/item/clothing/accessory/collar/cowbell
 
 //TFF 17/6/19 - public loadout addition: Indigestible Holocollar
 /datum/gear/collar/holo/indigestible

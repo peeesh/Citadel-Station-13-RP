@@ -468,7 +468,7 @@
 		/obj/item/storage/backpack/satchel = 2)
 
 /obj/structure/closet/wardrobe/captain
-	name = "colony director's wardrobe"
+	name = "Facility Director's wardrobe"
 	icon_state = "cabinet_closed"
 	icon_closed = "cabinet_closed"
 	icon_opened = "cabinet_open"
@@ -491,4 +491,5 @@
 		/obj/item/clothing/under/gimmick/rank/captain/suit,
 		/obj/item/clothing/under/gimmick/rank/captain/suit/skirt,
 		/obj/item/clothing/glasses/sunglasses,
-		/obj/item/clothing/head/caphat)
+		/obj/item/clothing/head/caphat,
+		/obj/item/clothing/under/bodysuit/bodysuitcommand)

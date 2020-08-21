@@ -168,7 +168,7 @@ var/global/list/light_type_cache = list()
 	anchored = 1
 	plane = MOB_PLANE
 	layer = ABOVE_MOB_LAYER
-	use_power = 2
+	use_power = USE_POWER_ACTIVE
 	idle_power_usage = 2
 	active_power_usage = 10
 	power_channel = LIGHT //Lights are calc'd via area so they dont need to be in the machine list
@@ -367,10 +367,10 @@ var/global/list/light_type_cache = list()
 					on = 0
 					set_light(0)
 			else
-				use_power = 2
+				update_use_power(USE_POWER_ACTIVE)
 				set_light(brightness_range, brightness_power, brightness_color)
 	else
-		use_power = 1
+		update_use_power(USE_POWER_IDLE)
 		set_light(0)
 
 	active_power_usage = ((light_range * light_power) * LIGHTING_POWER_FACTOR)
@@ -738,7 +738,7 @@ var/global/list/light_type_cache = list()
 	var/switchcount = 0	// number of times switched
 	matter = list(DEFAULT_WALL_MATERIAL = 60)
 	var/rigged = 0		// true if rigged to explode
-	var/broken_chance = 2
+	var/broken_chance = 0
 
 	var/brightness_range = 2 //how much light it gives off
 	var/brightness_power = 1

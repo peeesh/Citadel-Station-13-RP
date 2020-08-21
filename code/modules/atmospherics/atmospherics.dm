@@ -143,7 +143,7 @@ Pipelines + Other Objects -> Pipe network
 /obj/machinery/atmospherics/proc/reassign_network(datum/pipe_network/old_network, datum/pipe_network/new_network)
 	// Used when two pipe_networks are combining
 
-/obj/machinery/atmospherics/proc/return_network_air(datum/network/reference)
+/obj/machinery/atmospherics/proc/return_network_air(datum/pipe_network/reference)
 	// Return a list of gas_mixture(s) in the object
 	//		associated with reference pipe_network for use in rebuilding the networks gases list
 	// Is permitted to return null
@@ -209,8 +209,18 @@ Pipelines + Other Objects -> Pipe network
 			connect_types = CONNECT_TYPE_SUPPLY
 			layer = PIPES_SUPPLY_LAYER
 			icon_connect_type = "-supply"
+		if(PIPING_LAYER_FUEL)
+			icon_state = "[icon_state]-fuel"
+			connect_types = CONNECT_TYPE_FUEL
+			layer = PIPES_FUEL_LAYER
+			icon_connect_type = "-fuel"
+		if(PIPING_LAYER_AUX)
+			icon_state = "[icon_state]-aux"
+			connect_types = CONNECT_TYPE_AUX
+			layer = PIPES_AUX_LAYER
+			icon_connect_type = "-aux"
 	if(pipe_flags & PIPING_ALL_LAYER)
-		connect_types = CONNECT_TYPE_REGULAR|CONNECT_TYPE_SUPPLY|CONNECT_TYPE_SCRUBBER
+		connect_types = CONNECT_TYPE_REGULAR|CONNECT_TYPE_SUPPLY|CONNECT_TYPE_SCRUBBER|CONNECT_TYPE_FUEL|CONNECT_TYPE_AUX
 	// Or if we were to do it the TG way...
 	// pixel_x = PIPE_PIXEL_OFFSET_X(piping_layer)
 	// pixel_y = PIPE_PIXEL_OFFSET_Y(piping_layer)

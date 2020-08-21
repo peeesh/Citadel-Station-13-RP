@@ -9,13 +9,14 @@
 	icon_state = "capacitor"
 	var/active = 0
 	density = 1
+	req_one_access = list(access_engine,access_captain,access_security)
 	var/stored_charge = 0	//not to be confused with power cell charge, this is in Joules
 	var/last_stored_charge = 0
 	var/time_since_fail = 100
 	var/max_charge = 8e6	//8 MJ
 	var/max_charge_rate = 400000	//400 kW
 	var/locked = 0
-	use_power = 0 //doesn't use APC power
+	use_power = USE_POWER_OFF //doesn't use APC power
 	var/charge_rate = 100000	//100 kW
 	var/obj/machinery/shield_gen/owned_gen
 
@@ -37,14 +38,16 @@
 
 /obj/machinery/shield_capacitor/attackby(obj/item/W, mob/user)
 
-	if(istype(W, /obj/item/card/id))
-		var/obj/item/card/id/C = W
-		if(access_captain in C.access || access_security in C.access || access_engine in C.access)
+	if(istype(W, /obj/item/card/id) || istype(W, /obj/item/pda))
+		if(emagged)
+			to_chat(user, "<span class='warning'>The lock seems to be broken.</span>")
+			return
+		if(src.allowed(user))
 			src.locked = !src.locked
 			to_chat(user, "Controls are now [src.locked ? "locked." : "unlocked."]")
 			updateDialog()
 		else
-			to_chat(user, "<font color='red'>Access denied.</font>")
+			to_chat(user, "<span class='warning'>Access denied.</span>")
 	else if(W.is_wrench())
 		src.anchored = !src.anchored
 		playsound(src, W.usesound, 75, 1)

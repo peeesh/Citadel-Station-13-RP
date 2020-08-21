@@ -296,7 +296,7 @@
 	if(!enable_special)
 		target = get_turf(chassis)
 
-	var/datum/beam/ScanBeam = chassis.Beam(target,"g_beam",'icons/effects/beam.dmi',time=2 SECONDS,10,/obj/effect/ebeam,2)
+	var/datum/beam/ScanBeam = chassis.Beam(target,"g_beam",'icons/effects/beam.dmi',2 SECONDS,10,/obj/effect/ebeam,2)
 
 	if(do_after(chassis.occupant, 2 SECONDS))
 		my_scanner.ScanTurf(target, chassis.occupant, exact_scan)
@@ -1139,11 +1139,11 @@
 		return
 	var/datum/gas_mixture/GM = new
 	if(prob(10))
-		T.assume_gas("phoron", 100, 1500+T0C)
+		T.assume_gas(/datum/gas/phoron, 100, 1500+T0C)
 		T.visible_message("The [src] suddenly disgorges a cloud of heated phoron.")
 		destroy()
 	else
-		T.assume_gas("phoron", 5, istype(T) ? T.air.temperature : T20C)
+		T.assume_gas(/datum/gas/phoron, 5, istype(T) ? T.air.temperature : T20C)
 		T.visible_message("The [src] suddenly disgorges a cloud of phoron.")
 	T.assume_air(GM)
 	return

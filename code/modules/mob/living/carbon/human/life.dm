@@ -255,7 +255,7 @@
 			if(gene.is_active(src))
 				gene.OnMobLife(src)
 
-	radiation = CLAMP(radiation,0,250)
+	radiation = clamp(radiation,0,250)
 
 	if(!radiation)
 		if(species.appearance_flags & RADIATION_GLOWS)
@@ -437,13 +437,13 @@
 	if(species.breath_type)
 		breath_type = species.breath_type
 	else
-		breath_type = "oxygen"
+		breath_type = /datum/gas/oxygen
 	inhaling = breath.gas[breath_type]
 
 	if(species.poison_type)
 		poison_type = species.poison_type
 	else
-		poison_type = "phoron"
+		poison_type = /datum/gas/phoron
 	poison = breath.gas[poison_type]
 
 	if(species.exhale_type)
@@ -514,15 +514,15 @@
 	if(toxins_pp > safe_toxins_max)
 		var/ratio = (poison/safe_toxins_max) * 10
 		if(reagents)
-			reagents.add_reagent("toxin", CLAMP(ratio, MIN_TOXIN_DAMAGE, MAX_TOXIN_DAMAGE))
+			reagents.add_reagent("toxin", clamp(ratio, MIN_TOXIN_DAMAGE, MAX_TOXIN_DAMAGE))
 			breath.adjust_gas(poison_type, -poison/6, update = 0) //update after
 		phoron_alert = max(phoron_alert, 1)
 	else
 		phoron_alert = 0
 
 	// If there's some other shit in the air lets deal with it here.
-	if(breath.gas["sleeping_agent"])
-		var/SA_pp = (breath.gas["sleeping_agent"] / breath.total_moles) * breath_pressure
+	if(breath.gas[/datum/gas/nitrous_oxide])
+		var/SA_pp = (breath.gas[/datum/gas/nitrous_oxide] / breath.total_moles) * breath_pressure
 
 		// Enough to make us paralysed for a bit
 		if(SA_pp > SA_para_min)
@@ -538,7 +538,7 @@
 		else if(SA_pp > 0.15)
 			if(prob(20))
 				spawn(0) emote(pick("giggle", "laugh"))
-		breath.adjust_gas("sleeping_agent", -breath.gas["sleeping_agent"]/6, update = 0) //update after
+		breath.adjust_gas(/datum/gas/nitrous_oxide, -breath.gas[/datum/gas/nitrous_oxide]/6, update = 0) //update after
 
 	// Were we able to breathe?
 	if (failed_inhale || failed_exhale)
@@ -616,7 +616,7 @@
 
 	//Check for contaminants before anything else because we don't want to skip it.
 	for(var/g in environment.gas)
-		if(gas_data.flags[g] & XGM_GAS_CONTAMINANT && environment.gas[g] > gas_data.overlay_limit[g] + 1)
+		if(GLOB.meta_gas_flags[g] & GAS_FLAG_CONTAMINANT && environment.gas[g] > GLOB.meta_gas_visibility[g] + 1)
 			pl_effects()
 			break
 
@@ -871,21 +871,22 @@
 				bloodstr.metabolize()
 
 			var/total_phoronloss = 0
+			GET_VSC_PROP(atmos_vsc, /atmos/phoron/contamination_loss, loss_per_part)
 			for(var/obj/item/I in src)
 				if(I.contaminated)
 					if(check_belly(I)) continue //VOREStation Edit
 					if(src.species && src.species.get_bodytype() != "Vox" && src.species.get_bodytype() != "Shadekin")	//VOREStation Edit: shadekin
 						// This is hacky, I'm so sorry.
 						if(I != l_hand && I != r_hand)	//If the item isn't in your hands, you're probably wearing it. Full damage for you.
-							total_phoronloss += vsc.plc.CONTAMINATION_LOSS
+							total_phoronloss += loss_per_part
 						else if(I == l_hand)	//If the item is in your hands, but you're wearing protection, you might be alright.
 							var/l_hand_blocked = 0
 							l_hand_blocked = 1-(100-getarmor(BP_L_HAND, "bio"))/100	//This should get a number between 0 and 1
-							total_phoronloss += vsc.plc.CONTAMINATION_LOSS * l_hand_blocked
+							total_phoronloss += loss_per_part * l_hand_blocked
 						else if(I == r_hand)	//If the item is in your hands, but you're wearing protection, you might be alright.
 							var/r_hand_blocked = 0
 							r_hand_blocked = 1-(100-getarmor(BP_R_HAND, "bio"))/100	//This should get a number between 0 and 1
-							total_phoronloss += vsc.plc.CONTAMINATION_LOSS * r_hand_blocked
+							total_phoronloss += loss_per_part * r_hand_blocked
 			if(total_phoronloss)
 				if(!(status_flags & GODMODE))
 					adjustToxLoss(total_phoronloss)

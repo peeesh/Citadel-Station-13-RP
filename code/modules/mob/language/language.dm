@@ -50,28 +50,28 @@
 		if(L.partial_understanding && L.partial_understanding[name])
 			understand_chance += L.partial_understanding[name] * 0.5
 	var/scrambled_text = ""
-	var/list/words = splittext(input, " ")
+	var/list/words = splittext_char(input, " ")
 	for(var/w in words)
 		if(prob(understand_chance))
 			scrambled_text += " [w] "
 		else
 			var/nword = scramble_word(w)
-			var/ending = copytext(scrambled_text, length(scrambled_text)-1)
-			if(findtext(ending,"."))
+			var/ending = copytext_char(scrambled_text, length_char(scrambled_text)-1)
+			if(findtext_char(ending,"."))
 				nword = capitalize(nword)
-			else if(findtext(ending,"!"))
+			else if(findtext_char(ending,"!"))
 				nword = capitalize(nword)
-			else if(findtext(ending,"?"))
+			else if(findtext_char(ending,"?"))
 				nword = capitalize(nword)
 			scrambled_text += nword
-	scrambled_text = replacetext(scrambled_text,"  "," ")
+	scrambled_text = replacetext_char(scrambled_text,"  "," ")
 	scrambled_text = capitalize(scrambled_text)
 	scrambled_text = trim(scrambled_text)
-	var/ending = copytext(scrambled_text, length(scrambled_text))
+	var/ending = copytext_char(scrambled_text, length_char(scrambled_text))
 	if(ending == ".")
-		scrambled_text = copytext(scrambled_text,1,length(scrambled_text)-1)
+		scrambled_text = copytext_char(scrambled_text,1,length_char(scrambled_text)-1)
 
-	var/input_ending = copytext(input, length(input))
+	var/input_ending = copytext_char(input, length_char(input))
 	if(input_ending in list("!","?","."))
 		scrambled_text += input_ending
 
@@ -88,11 +88,11 @@
 		scramble_cache[input] = n
 		return n
 
-	var/input_size = length(input)
+	var/input_size = length_char(input)
 	var/scrambled_text = ""
 	var/capitalize = 0
 
-	while(length(scrambled_text) < input_size)
+	while(length_char(scrambled_text) < input_size)
 		var/next = pick(syllables)
 		if(capitalize)
 			next = capitalize(next)
@@ -123,7 +123,7 @@
 
 /datum/language/proc/get_talkinto_msg_range(message)
 	// if you yell, you'll be heard from two tiles over instead of one
-	return (copytext(message, length(message)) == "!") ? 2 : 1
+	return (copytext_char(message, length_char(message)) == "!") ? 2 : 1
 
 /datum/language/proc/broadcast(var/mob/living/speaker,var/message,var/speaker_mask)
 	log_say("(HIVE) [message]", speaker)
@@ -179,7 +179,7 @@
 // Language handling.
 /mob/proc/add_language(var/language)
 
-	var/datum/language/new_language = all_languages[language]
+	var/datum/language/new_language = GLOB.all_languages[language]
 
 	if(!istype(new_language) || (new_language in languages))
 		return 0
@@ -188,12 +188,12 @@
 	return 1
 
 /mob/proc/remove_language(var/rem_language)
-	var/datum/language/L = all_languages[rem_language]
+	var/datum/language/L = GLOB.all_languages[rem_language]
 	. = (L in languages)
 	languages.Remove(L)
 
 /mob/living/remove_language(rem_language)
-	var/datum/language/L = all_languages[rem_language]
+	var/datum/language/L = GLOB.all_languages[rem_language]
 	if(default_language == L)
 		default_language = null
 	return ..()
@@ -205,10 +205,10 @@
 		log_debug("[src] attempted to speak a null language.")
 		return 0
 
-	if(speaking == all_languages["Noise"])
+	if(speaking == GLOB.all_languages["Noise"])
 		return 1
 
-	if (only_species_language && speaking != all_languages[species_language])
+	if (only_species_language && speaking != GLOB.all_languages[species_language])
 		return 0
 
 	if(speaking.can_speak_special(src))
@@ -268,7 +268,7 @@
 	if(href_list["default_lang"])
 		if(href_list["default_lang"] == "reset")
 			if (species_language)
-				set_default_language(all_languages[species_language])
+				set_default_language(GLOB.all_languages[species_language])
 			else
 				set_default_language(null)
 		else
